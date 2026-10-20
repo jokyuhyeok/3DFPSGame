@@ -364,7 +364,7 @@ MonoBehaviour:
     localRotation: {x: 90, y: 0, z: 0}
     enableMouseRotate: 0
   - viewType: 5
-    localPosition: {x: 10, y: 0, z: 0}
+    localPosition: {x: 10, y: 0, z: 3}
     localRotation: {x: 0, y: -90, z: 0}
     enableMouseRotate: 0
 --- !u!1 &410087039
@@ -1514,7 +1514,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
   _moveSpeed: 7
   _jumpPower: 7
+  _sprintSpeed: 12
   _characterController: {fileID: 1098097666}
+  _maxJumpCount: 2
 --- !u!143 &1098097666
 CharacterController:
   m_ObjectHideFlags: 0

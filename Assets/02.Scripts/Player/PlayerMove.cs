@@ -7,7 +7,11 @@ public class PlayerMove : MonoBehaviour
 
     [SerializeField] private float _moveSpeed = 7f;
     [SerializeField] private float _jumpPower = 7f;
+    [SerializeField] private float _sprintSpeed = 12f;
     [SerializeField] private CharacterController _characterController;
+
+    [SerializeField] private int _maxJumpCount = 2;
+    private int _jumpCount = 0;
 
     private void Update()
     {
@@ -30,20 +34,31 @@ public class PlayerMove : MonoBehaviour
         else
         {
             // 땅에 서있으면 중력 초기화
-            _yVelocity = 0f;
+            _yVelocity = -1f;
+            _jumpCount = 0;
         }
 
         // 4. 만약에 점프키를 누르면... 점프를 한다.
-        if (Input.GetButtonDown("Jump") && _characterController.isGrounded)
+        if (Input.GetButtonDown("Jump"))
         {
-            _yVelocity = _jumpPower;
+            if (_characterController.isGrounded)
+            {
+                _yVelocity = _jumpPower;
+                _jumpCount = 1;
+            }
+            else if (_jumpCount < _maxJumpCount)
+            {
+                _yVelocity = _jumpPower;
+                _jumpCount++;
+            }
         }
 
         // 5. 속도를 구한다.
-        Vector3 velocity = direction * _moveSpeed;
+        float currentSpeed = Input.GetButton("Sprint") ? _sprintSpeed : _moveSpeed;
+        Vector3 velocity = direction * currentSpeed;
         velocity.y = _yVelocity;
 
-        // 5. 속도(방향과 속력)에 따라 이동한다. 
+        // 6. 속도(방향과 속력)에 따라 이동한다. 
         //transform.position += direction * _moveSpeed * Time.deltaTime;
         _characterController.Move(velocity * Time.deltaTime);
     }
