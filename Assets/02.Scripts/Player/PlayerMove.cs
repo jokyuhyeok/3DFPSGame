@@ -4,14 +4,13 @@ public class PlayerMove : MonoBehaviour
 {
     private const float Gravity = -20f;
     private float _yVelocity = 0f; // 위아래 속도, 매 프레임마다 중력 가속도가 붙는다.
+    private int _jumpCount = 0;
 
     [SerializeField] private float _moveSpeed = 7f;
     [SerializeField] private float _jumpPower = 7f;
     [SerializeField] private float _sprintSpeed = 12f;
-    [SerializeField] private CharacterController _characterController;
-
     [SerializeField] private int _maxJumpCount = 2;
-    private int _jumpCount = 0;
+    [SerializeField] private CharacterController _characterController;
 
     private void Update()
     {
