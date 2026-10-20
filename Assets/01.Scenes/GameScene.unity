@@ -344,17 +344,17 @@ MonoBehaviour:
   _target: {fileID: 1739842660}
   _presets:
   - viewType: 0
-    localPosition: {x: 0, y: 0.8, z: 0.5}
+    localPosition: {x: 0, y: -0.5, z: 0.5}
     localRotation: {x: 0, y: 0, z: 0}
     enableMouseRotate: 1
   - viewType: 1
     localPosition: {x: 0, y: 0, z: -6}
     localRotation: {x: 15, y: 0, z: 0}
-    enableMouseRotate: 1
+    enableMouseRotate: 0
   - viewType: 2
     localPosition: {x: 1.5, y: 0, z: -4}
     localRotation: {x: 5, y: -5, z: 0}
-    enableMouseRotate: 1
+    enableMouseRotate: 0
   - viewType: 3
     localPosition: {x: -5, y: 7, z: -6}
     localRotation: {x: 45, y: 45, z: 0}
@@ -1513,6 +1513,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
   _moveSpeed: 7
+  _jumpPower: 7
   _characterController: {fileID: 1098097666}
 --- !u!143 &1098097666
 CharacterController:
