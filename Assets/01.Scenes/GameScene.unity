@@ -1735,6 +1735,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87e2057c7010b054785d7092fbe272c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerGunFire
+  _hitEffectPrefab: {fileID: 19800002, guid: 54dd9cb5740188a488b8baebbf19207c, type: 3}
 --- !u!1 &1239107605
 GameObject:
   m_ObjectHideFlags: 0
