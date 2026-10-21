@@ -9,7 +9,6 @@ public class Bomb : MonoBehaviour
     // 다른 콜라이더와 부딪힌 순간 실행되는 메서드
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log($"폭탄을 터뜨린 범인: {collision.gameObject.name}");
         ParticleSystem effect = Instantiate(_explosionEffectPrefab, transform.position, Quaternion.identity);
         effect.Play();
 
