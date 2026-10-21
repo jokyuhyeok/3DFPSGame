@@ -8,6 +8,7 @@ public class PlayerGunFire : MonoBehaviour
 
     [Header("스탯")]
     [SerializeField] private float _range = 100f; // 사거리
+
     [SerializeField] private float _damage = 10f; // 공격력
     [SerializeField] private float _fireInterval = 0.1f; // 발사 속도
     [SerializeField] private int _maxBulletCount = 30;
@@ -15,6 +16,7 @@ public class PlayerGunFire : MonoBehaviour
 
     private float _fireTimer = 0f;
     private int _bulletCount = 0;
+    private Coroutine _reloadCoroutine = null;
 
     private void Start()
     {
@@ -32,12 +34,22 @@ public class PlayerGunFire : MonoBehaviour
             _bulletCount--;
             _fireTimer = _fireInterval;
             Shoot();
+
+            // 이 방식은 이 MonoBehavior가 등록한 모든 코루틴을 실행 취소
+            // StopAllCoroutines();
+
+            if (_reloadCoroutine != null)
+            {
+                StopCoroutine(_reloadCoroutine);
+                Debug.Log("재장전 취소!");
+                _reloadCoroutine = null;
+            }
         }
 
         // 2. R키를 누르면 총알 재장전 시작
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R) && _reloadCoroutine == null)
         {
-            StartCoroutine(Reloading_Coroutine());
+            _reloadCoroutine = StartCoroutine(Reloading_Coroutine());
         }
     }
 
@@ -47,6 +59,7 @@ public class PlayerGunFire : MonoBehaviour
         yield return new WaitForSeconds(_reloadingTime);
         _bulletCount = _maxBulletCount;
         Debug.Log("재장전 완료!");
+        _reloadCoroutine = null;
     }
 
     private void Shoot()
