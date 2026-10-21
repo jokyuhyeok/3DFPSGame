@@ -5,7 +5,6 @@ public class PlayerBombFire : MonoBehaviour
 {
     [SerializeField] private Transform _firePoint;
     [SerializeField] private Bomb _bombPrefab;
-    [SerializeField] private float _throwPower = 15f;
 
     [Header("폭탄 개수 제한 및 쿨타임 설정")]
     [SerializeField] private int _maxbombcount = 10;
