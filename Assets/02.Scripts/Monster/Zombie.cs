@@ -64,16 +64,6 @@ public class Zombie : MonoBehaviour
                     Attack();
                     break;
                 }
-            case ZombieState.Hit:
-                {
-                    Hit();
-                    break;
-                }
-            case ZombieState.Death:
-                {
-                    Death();
-                    break;
-                }
         }
     }
 
@@ -185,13 +175,5 @@ public class Zombie : MonoBehaviour
             Debug.Log("플레이어를 때렸습니다.");
             _attackTimer = 0f;
         }
-    }
-
-    private void Hit()
-    {
-    }
-
-    private void Death()
-    {
     }
 }
