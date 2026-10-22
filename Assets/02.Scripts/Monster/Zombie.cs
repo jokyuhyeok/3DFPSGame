@@ -1,4 +1,4 @@
-using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AdaptivePerformance.Provider;
 
@@ -24,6 +24,7 @@ public class Zombie : MonoBehaviour
     [SerializeField] private float _attackRange = 1.5f; // 공격 범위
     [SerializeField] private float _attackInterval = 1.2f; // 공격 간격
     [SerializeField] private float _moveSpeed = 5f;
+    [SerializeField] private float _health = 30f;
 
     private float _attackTimer = 0f;
     private CharacterController _controller;
@@ -74,6 +75,43 @@ public class Zombie : MonoBehaviour
                     break;
                 }
         }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        if (_state == ZombieState.Death) return;
+
+        _health -= damage;
+
+        StopAllCoroutines();
+
+        if (_health > 0f)
+        {
+            Debug.Log($"{_state} -> Hit");
+            _state = ZombieState.Hit;
+            StartCoroutine(Hit_Coroutine());
+        }
+        else
+        {
+            Debug.Log($"{_state} -> Death");
+            _state = ZombieState.Death;
+            StartCoroutine(Death_Coroutine());
+        }
+    }
+
+    private IEnumerator Hit_Coroutine()
+    {
+        yield return new WaitForSeconds(0.3f);
+
+        Debug.Log($"{_state} -> Hit");
+        _state = ZombieState.Trace;
+    }
+
+    private IEnumerator Death_Coroutine()
+    {
+        _controller.enabled = false;
+        yield return new WaitForSeconds(0.5f);
+        Destroy(gameObject);
     }
 
     private void Idle()
