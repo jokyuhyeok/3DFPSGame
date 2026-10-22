@@ -1772,6 +1772,8 @@ MonoBehaviour:
   _range: 100
   _damage: 10
   _fireInterval: 0.1
+  _maxBulletCount: 30
+  _reloadingTime: 3
 --- !u!114 &1098097668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1786,7 +1788,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerBombFire
   _firePoint: {fileID: 4291940}
   _bombPrefab: {fileID: 6830306511738657237, guid: 3fa2167c91d061d40b1f03ffbbb03e6b, type: 3}
-  _throwPower: 15
+  _maxbombcount: 10
+  _cooldownDuration: 60
+  _minThrowPower: 5
+  _maxThrowPower: 25
+  _chargeSpeed: 5
 --- !u!1 &1239107605
 GameObject:
   m_ObjectHideFlags: 0
