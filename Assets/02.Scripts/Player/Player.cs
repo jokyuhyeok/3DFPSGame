@@ -35,6 +35,7 @@ public class Player : MonoBehaviour, IDamageable
         if (_health <= 0f)
         {
             Debug.Log("플레이어가 쓰러졌다."); // 11장에서 게임 오버로 바꾼다.
+            GameManager.Instance.GameOver();
         }
     }
 }

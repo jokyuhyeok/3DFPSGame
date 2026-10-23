@@ -939,6 +939,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f26892a423a57c45a32ee1cd6ca539a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  _stateText: {fileID: 518826728}
 --- !u!4 &505460647
 Transform:
   m_ObjectHideFlags: 0
@@ -1013,8 +1014,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC900\uBE44"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6da0a6345b2edc74d86e2e70fd3cad44, type: 2}
-  m_sharedMaterial: {fileID: -5647678712630061776, guid: 6da0a6345b2edc74d86e2e70fd3cad44, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 4149c5dac6e1671479791975a7f4150a, type: 2}
+  m_sharedMaterial: {fileID: -9080954750860638369, guid: 4149c5dac6e1671479791975a7f4150a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
