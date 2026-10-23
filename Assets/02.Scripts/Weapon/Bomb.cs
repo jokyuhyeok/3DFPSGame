@@ -5,6 +5,8 @@ using UnityEngine.LowLevelPhysics2D;
 public class Bomb : MonoBehaviour
 {
     [SerializeField] private ParticleSystem _explosionEffectPrefab;
+    [SerializeField] private float _damage = 10f;
+    [SerializeField] private float _explosionRange = 4.5f;
 
     // 다른 콜라이더와 부딪힌 순간 실행되는 메서드
     private void OnCollisionEnter(Collision collision)
@@ -14,5 +16,25 @@ public class Bomb : MonoBehaviour
 
         // Todo. 오브젝트 풀링 적용
         Destroy(gameObject);
+    }
+
+    private void ApplyAreaDamage()
+    {
+        // 주위에 있는 드럼통들을 모두 찾는다. 
+        // Physics.OverlapSphere(원점, 반지름, 찾을 레이어들)
+        Collider[] colliders =
+            Physics.OverlapSphere(transform.position, _explosionRange, LayerMask.GetMask("Drum", "Zombie"));
+
+        foreach (Collider col in colliders)
+        {
+            DamageInfo damageInfo = new()
+            {
+                Value = _damage,
+                HitPoint = col.ClosestPoint(transform.position),
+                HitNormal = (transform.position - col.ClosestPoint(transform.position)).normalized,
+            };
+
+            col.GetComponent<IDamageable>()?.TakeDamage(damageInfo);
+        }
     }
 }
