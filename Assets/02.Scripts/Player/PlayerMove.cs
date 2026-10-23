@@ -3,11 +3,13 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     private const float Gravity = -20f;
-    private const float MaxStamina = 100f;
+    public const float MaxStamina = 100f;
 
     private float _yVelocity = 0f; // 위아래 속도, 매 프레임마다 중력 가속도가 붙는다.
     private int _jumpCount = 0;
     private float _stamina = 0f;
+
+    public float Stamina => _stamina;
 
     [Header("스탯")]
     [SerializeField] private float _moveSpeed = 7f;
