@@ -8,10 +8,12 @@ public class PlayerBombFire : MonoBehaviour
 
     [Header("폭탄 개수 제한 및 쿨타임 설정")]
     [SerializeField] private int _maxbombcount = 10;
+
     [SerializeField] private float _cooldownDuration = 60f;
 
     [Header("투척 파워 설정")]
     [SerializeField] private float _minThrowPower = 5f;
+
     [SerializeField] private float _maxThrowPower = 25f;
     [SerializeField] private float _chargeSpeed = 5f;
 
@@ -30,6 +32,8 @@ public class PlayerBombFire : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.State != GameState.Playing) return;
+
         // 쿨타임에 따라 타이머 감소 및 폭탄 충전
         if (_isCooldown)
         {

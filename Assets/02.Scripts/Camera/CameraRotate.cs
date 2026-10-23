@@ -11,6 +11,8 @@ public class CameraRotate : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.State != GameState.Playing) return;
+
         if (!Input.GetMouseButton(1))
         {
             return;
