@@ -48,6 +48,7 @@ public class Zombie : MonoBehaviour, IDamageable
     }
 
     public event Action<float, float> OnHealthChanged;
+    public event Action OnDeath;
     private ZombieState _state = ZombieState.Idle;
 
     private void Start()
@@ -110,6 +111,7 @@ public class Zombie : MonoBehaviour, IDamageable
         {
             Debug.Log($"{_state} -> Death");
             _state = ZombieState.Death;
+            OnDeath?.Invoke();
             StartCoroutine(Death_Coroutine());
         }
     }
