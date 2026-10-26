@@ -10,10 +10,20 @@ public class UI_PlayerStats : MonoBehaviour
     [SerializeField] private Slider _healthSlider;
     [SerializeField] private Slider _staminaSlider;
 
-    private void Start()
+    private void OnEnable()
     {
-        // 플레이어 공격 이벤트 구독!
-        _player.OnDamaged += RefreshHealth;
+        if (_player != null)
+        {
+            _player.OnDamaged += RefreshHealth;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (_player != null)
+        {
+            _player.OnDamaged -= RefreshHealth;
+        }
     }
 
     private void Update()

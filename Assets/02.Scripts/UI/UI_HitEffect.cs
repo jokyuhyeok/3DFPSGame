@@ -7,6 +7,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Image))]
 public class UI_HitEffect : MonoBehaviour
 {
+    [SerializeField] private Player _player;
     [SerializeField] private float _maxAlpha = 0.4f; // 번쩍일 때의 진하기 (0~1)
     [SerializeField] private float _fadeTime = 0.3f; // 사라지는 데 걸리는 시간 (초)
 
@@ -17,6 +18,22 @@ public class UI_HitEffect : MonoBehaviour
     {
         _image = GetComponent<Image>();
         SetAlpha(0f); // 처음에는 보이지 않는다.
+    }
+
+    private void OnEnable()
+    {
+        if (_player != null)
+        {
+            _player.OnDamaged += Play;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (_player != null)
+        {
+            _player.OnDamaged -= Play;
+        }
     }
 
     // 번쩍인다. 번쩍이는 중에 또 부르면 처음부터 다시 번쩍인다.

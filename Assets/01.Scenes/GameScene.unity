@@ -3996,6 +3996,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77edbe9b1e7e91f439792282f8ab5d59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_HitEffect
+  _player: {fileID: 1098097669}
   _maxAlpha: 0.4
   _fadeTime: 0.3
 --- !u!114 &1790204721
