@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 // 플레이어의 체력. 맞으면 체력이 줄어든다.
 public class Player : MonoBehaviour, IDamageable
@@ -15,6 +16,9 @@ public class Player : MonoBehaviour, IDamageable
     public float Health => _health;
     public float MaxHealth => _maxHealth;
 
+    // Action 자료형: 함수를 저장할 수 있다.
+    public event Action OnDamaged;
+
     private void Awake()
     {
         _health = _maxHealth;
@@ -29,6 +33,9 @@ public class Player : MonoBehaviour, IDamageable
         }
 
         _health = Mathf.Max(0f, _health - damageInfo.Value);
+
+        OnDamaged?.Invoke();
+
         _hitEffect.Play();
         Debug.Log($"플레이어가 맞았다. 대미지 {damageInfo.Value}, 남은 체력 {_health}");
 
