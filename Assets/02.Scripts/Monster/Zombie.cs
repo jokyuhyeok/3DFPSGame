@@ -1,9 +1,8 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.AdaptivePerformance.Provider;
+using System;
 
 // FSM(유한 상태 머신)
-
 // 좀비가 가질 수 있는 상태
 public enum ZombieState
 {
@@ -37,7 +36,18 @@ public class Zombie : MonoBehaviour, IDamageable
     private GameObject _player;
 
     public float MaxHealth => _maxhealth;
-    public float Health => _health;
+
+    public float Health
+    {
+        get => _health;
+        private set
+        {
+            _health = Mathf.Clamp(value, 0, _maxhealth);
+            OnHealthChanged?.Invoke(_health, _maxhealth);
+        }
+    }
+
+    public event Action<float, float> OnHealthChanged;
     private ZombieState _state = ZombieState.Idle;
 
     private void Start()
@@ -81,8 +91,7 @@ public class Zombie : MonoBehaviour, IDamageable
     {
         if (_state == ZombieState.Death) return;
 
-        _health -= damageInfo.Value;
-
+        Health -= damageInfo.Value;
         StopAllCoroutines();
 
         if (_health > 0f)
