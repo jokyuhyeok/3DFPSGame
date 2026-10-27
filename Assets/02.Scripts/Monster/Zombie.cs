@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using System;
+using UnityEngine.AI;
 
 // FSM(유한 상태 머신)
 // 좀비가 가질 수 있는 상태
@@ -14,11 +15,11 @@ public enum ZombieState
     Death,
 }
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class Zombie : MonoBehaviour, IDamageable
 {
     [Header("스탯")]
     [SerializeField] private float _detectDistance = 8f;
-
     [SerializeField] private float _comebackDistance = 15f; // 처음 자리에서 이만큼 멀어지면 돌아간다.
     [SerializeField] private float _attackRange = 1.5f; // 공격 범위
     [SerializeField] private float _attackInterval = 1.2f; // 공격 간격
@@ -31,9 +32,9 @@ public class Zombie : MonoBehaviour, IDamageable
     [SerializeField] private GameObject _bloodSprayPrefab;
 
     private float _attackTimer = 0f;
-    private CharacterController _controller;
     private Vector3 _startPosition;
     private GameObject _player;
+    private NavMeshAgent _agent;
 
     public float MaxHealth => _maxhealth;
 
@@ -48,13 +49,16 @@ public class Zombie : MonoBehaviour, IDamageable
     }
 
     public event Action<float, float> OnHealthChanged;
-    public event Action OnDeath;
+    public event Action<Zombie> OnDeath; // 스포너가 여러 좀비를 구독 -> 죽은 좀비 자신을 전달하도록 수정
     private ZombieState _state = ZombieState.Idle;
 
     private void Start()
     {
         _health = _maxhealth;
-        _controller = GetComponent<CharacterController>();
+
+        _agent = GetComponent<NavMeshAgent>(); // 길을 찾아 걷게 해주는 컴포넌트를 찾아서 참조
+        _agent.speed = _moveSpeed;
+
         _startPosition = transform.position;
         _player = GameObject.FindGameObjectWithTag("Player");
     }
@@ -111,7 +115,7 @@ public class Zombie : MonoBehaviour, IDamageable
         {
             Debug.Log($"{_state} -> Death");
             _state = ZombieState.Death;
-            OnDeath?.Invoke();
+            OnDeath?.Invoke(this);
             StartCoroutine(Death_Coroutine());
         }
     }
@@ -126,7 +130,6 @@ public class Zombie : MonoBehaviour, IDamageable
 
     private IEnumerator Death_Coroutine()
     {
-        _controller.enabled = false;
         yield return new WaitForSeconds(0.5f);
         Destroy(gameObject);
     }
@@ -160,12 +163,7 @@ public class Zombie : MonoBehaviour, IDamageable
             return;
         }
 
-        Vector3 direction = _player.transform.position - transform.position;
-        direction.y = 0f;
-        direction.Normalize();
-
-        transform.forward = direction;
-        _controller.SimpleMove(direction * _moveSpeed);
+        _agent.SetDestination(_player.transform.position);
     }
 
     private void Comeback()
@@ -177,12 +175,7 @@ public class Zombie : MonoBehaviour, IDamageable
             return;
         }
 
-        Vector3 direction = _startPosition - transform.position;
-        direction.y = 0f;
-        direction.Normalize();
-
-        transform.forward = direction;
-        _controller.SimpleMove(direction * _moveSpeed);
+        _agent.SetDestination(_startPosition);
     }
 
     private void Attack()
