@@ -123,8 +123,8 @@ public class Zombie : MonoBehaviour, IDamageable
 
     private IEnumerator Hit_Coroutine()
     {
-        yield return new WaitForSeconds(0.3f); // 이래도 NavMesh는 계속 이동
         StopAgent();
+        yield return new WaitForSeconds(0.3f); // 이래도 NavMesh는 계속 이동
 
         Debug.Log($"{_state} -> Hit");
         _state = ZombieState.Trace;
