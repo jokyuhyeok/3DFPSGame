@@ -446,6 +446,7 @@ MonoBehaviour:
   _maxhealth: 30
   _health: 30
   _attackDamage: 10
+  _attackRotateSpeed: 10
   _bloodSprayPrefab: {fileID: 1000013355911406, guid: d32aa916f50cac94db11e6f19821a58f, type: 3}
 --- !u!114 &-3954995571443999049
 MonoBehaviour:
@@ -650,6 +651,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 5e1dee995bbcc6b448c00f7fdd9eab91, type: 2}
+    - target: {fileID: 7389507112651452681, guid: 6dc4cf4496348884d8ee27743ae38562, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

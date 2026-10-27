@@ -17,12 +17,14 @@ public class ZombieHealthBar : MonoBehaviour
     {
         // 좀비의 체력에 내 체력바 연결을 하겠다.
         _zombie.OnHealthChanged += UpdateHealthBar;
+        _zombie.OnDeath += HideHealthBar;
     }
 
     private void OnDisable()
     {
         // 좀비의 체력에 내 체력바 연결을 끊겠다.
         _zombie.OnHealthChanged -= UpdateHealthBar;
+        _zombie.OnDeath -= HideHealthBar;
     }
 
     private void LateUpdate()
@@ -35,5 +37,10 @@ public class ZombieHealthBar : MonoBehaviour
     {
         // 0 ~ 100 -> 0 ~ 1
         _slider.value = currentHealth / maxHealth;
+    }
+
+    private void HideHealthBar(Zombie zombie)
+    {
+        _slider.gameObject.SetActive(false);
     }
 }

@@ -28,6 +28,7 @@ public class Zombie : MonoBehaviour, IDamageable
     [SerializeField] private float _maxhealth = 30f;
     [SerializeField] private float _health = 30f;
     [SerializeField] private float _attackDamage = 10; // 공격력
+    [SerializeField] private float _attackRotateSpeed = 10f; // 공격 중 플레이어를 바라보게 몸통 회전 속도
 
     [Header("이펙트")]
     [SerializeField] private GameObject _bloodSprayPrefab;
@@ -105,7 +106,6 @@ public class Zombie : MonoBehaviour, IDamageable
 
         if (_health > 0f)
         {
-            // Todo. 맞은 부위에 피 이펙트를 실행하고 싶다.
             GameObject bloodSpray = Instantiate(_bloodSprayPrefab, transform);
             bloodSpray.transform.position = damageInfo.HitPoint;
             bloodSpray.transform.forward = damageInfo.HitNormal;
@@ -119,6 +119,7 @@ public class Zombie : MonoBehaviour, IDamageable
         else
         {
             Debug.Log($"{_state} -> Death");
+            _animator.ResetTrigger("Hit");
             _animator.SetTrigger("Death");
             _state = ZombieState.Death;
             OnDeath?.Invoke(this);
@@ -205,10 +206,13 @@ public class Zombie : MonoBehaviour, IDamageable
         if (distance > _attackRange)
         {
             Debug.Log($"{_state} -> Trace");
+            _animator.ResetTrigger("StartAttack");
             _animator.SetTrigger("AttackMove");
             _state = ZombieState.Trace;
             return;
         }
+
+        LookAtPlayer();
 
         _attackTimer += Time.deltaTime;
 
@@ -220,8 +224,22 @@ public class Zombie : MonoBehaviour, IDamageable
         }
     }
 
+    private void LookAtPlayer()
+    {
+        Vector3 direction = _player.transform.position - transform.position;
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude < 0.0001f) return; // 같은 위치면 방향을 구할 수 없음
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _attackRotateSpeed * Time.deltaTime);
+    }
+
     public void AttackAction()
     {
+        if (_state != ZombieState.Attack) return;
+        if (Vector3.Distance(transform.position, _player.transform.position) > _attackRange) return;
+
         // 플레이어를 때린다.
         if (_player.TryGetComponent(out IDamageable damageable))
         {
