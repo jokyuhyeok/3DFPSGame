@@ -118,6 +118,7 @@ public class Zombie : MonoBehaviour, IDamageable
         else
         {
             Debug.Log($"{_state} -> Death");
+            _animator.SetTrigger("Death");
             _state = ZombieState.Death;
             OnDeath?.Invoke(this);
             StartCoroutine(Death_Coroutine());
@@ -136,7 +137,7 @@ public class Zombie : MonoBehaviour, IDamageable
     private IEnumerator Death_Coroutine()
     {
         StopAgent();
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(2f);
         Destroy(gameObject);
     }
 
@@ -168,7 +169,7 @@ public class Zombie : MonoBehaviour, IDamageable
         {
             _attackTimer = 0f;
             Debug.Log($"{_state} -> Attack");
-            _animator.SetTrigger("MoveAttackDelay");
+            _animator.SetTrigger("MoveToAttackDelay");
             _state = ZombieState.Attack;
             return;
         }
@@ -183,7 +184,7 @@ public class Zombie : MonoBehaviour, IDamageable
     {
         // if(_agent.pathStatus == NavMeshPathStatus.PathComplete)
         // if (_agent.remainingDistance < _agent.stoppingDistance)
-        if (Vector3.Distance(transform.position, _startPosition) > _agent.stoppingDistance)
+        if (Vector3.Distance(transform.position, _startPosition) < _agent.stoppingDistance)
         {
             Debug.Log($"{_state} -> Idle");
             _animator.SetTrigger("MoveToIdle");
@@ -212,20 +213,24 @@ public class Zombie : MonoBehaviour, IDamageable
 
         if (_attackTimer >= _attackInterval)
         {
-            // 플레이어를 때린다.
-            if (_player.TryGetComponent(out IDamageable damageable))
-            {
-                _animator.SetTrigger("StartAttack");
-                DamageInfo damageInfo = new DamageInfo
-                {
-                    Value = _attackDamage,
-                    HitPoint = _player.transform.position,
-                    HitNormal = (transform.position - _player.transform.position).normalized, // 좀비 쪽
-                };
-                damageable.TakeDamage(damageInfo);
-            }
+            _animator.SetTrigger("StartAttack");
 
             _attackTimer = 0f;
+        }
+    }
+
+    public void AttackAction()
+    {
+        // 플레이어를 때린다.
+        if (_player.TryGetComponent(out IDamageable damageable))
+        {
+            DamageInfo damageInfo = new DamageInfo
+            {
+                Value = _attackDamage,
+                HitPoint = _player.transform.position,
+                HitNormal = (transform.position - _player.transform.position).normalized, // 좀비 쪽
+            };
+            damageable.TakeDamage(damageInfo);
         }
     }
 
