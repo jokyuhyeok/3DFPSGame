@@ -111,6 +111,7 @@ public class Zombie : MonoBehaviour, IDamageable
             bloodSpray.transform.forward = damageInfo.HitNormal;
 
             Debug.Log($"{_state} -> Hit");
+            _animator.SetTrigger("Hit");
             _state = ZombieState.Hit;
             StartCoroutine(Hit_Coroutine());
             Destroy(bloodSpray, 1f);
@@ -128,7 +129,7 @@ public class Zombie : MonoBehaviour, IDamageable
     private IEnumerator Hit_Coroutine()
     {
         StopAgent();
-        yield return new WaitForSeconds(0.3f); // 이래도 NavMesh는 계속 이동
+        yield return new WaitForSeconds(0.5f); // 이래도 NavMesh는 계속 이동
 
         Debug.Log($"{_state} -> Hit");
         _state = ZombieState.Trace;
