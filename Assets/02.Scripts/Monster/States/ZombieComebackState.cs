@@ -12,12 +12,12 @@ public class ZombieComebackState : IZombieState
 
     public void Enter()
     {
-        _zombie.Agent.SetDestination(_zombie.StartPosition);
+        _zombie.Agent.SetDestination(_zombie.ReturnPosition);
     }
 
     public void Execute()
     {
-        if (_zombie.DistanceToStart < _zombie.Agent.stoppingDistance)
+        if (_zombie.DistanceToReturn < _zombie.Agent.stoppingDistance)
         {
             _zombie.Animator.SetTrigger("MoveToIdle");
             _zombie.ChangeState(ZombieState.Idle);

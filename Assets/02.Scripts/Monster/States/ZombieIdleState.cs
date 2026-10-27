@@ -4,6 +4,7 @@ using UnityEngine;
 public class ZombieIdleState : IZombieState
 {
     private readonly Zombie _zombie;
+    private float _timer = 0f;
 
     public ZombieIdleState(Zombie zombie)
     {
@@ -13,6 +14,7 @@ public class ZombieIdleState : IZombieState
     public void Enter()
     {
         _zombie.StopAgent(); // 들어올 때 1번 실행
+        _timer = 0f;
     }
 
     public void Execute()
@@ -21,10 +23,19 @@ public class ZombieIdleState : IZombieState
         {
             _zombie.Animator.SetTrigger("IdleToMove");
             _zombie.ChangeState(ZombieState.Trace);
+            return;
+        }
+
+        _timer += Time.deltaTime;
+        if (_zombie.HasPatrolPoints && _timer >= _zombie.IdleDuration)
+        {
+            _zombie.Animator.SetTrigger("IdleToPatrol");
+            _zombie.ChangeState(ZombieState.Patrol);
         }
     }
 
     public void Exit()
     {
+        _zombie.SetReturnPosition();
     }
 }

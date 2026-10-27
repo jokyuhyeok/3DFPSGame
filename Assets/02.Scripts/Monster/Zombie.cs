@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.AI;
-using UnityEngine.XR;
 
 // FSM(유한 상태 머신)
 // 좀비가 가질 수 있는 상태
 public enum ZombieState
 {
     Idle,
+    Patrol,
     Trace,
     Comeback,
     Attack,
@@ -24,7 +24,7 @@ public class Zombie : MonoBehaviour, IDamageable
     [Header("스탯")]
     [SerializeField] private float _detectDistance = 8f;
 
-    [SerializeField] private float _comebackDistance = 15f; // 처음 자리에서 이만큼 멀어지면 돌아간다.
+    [SerializeField] private float _comebackDistance = 15f; // 추적을 시작한 자리에서 이만큼 멀어지면 돌아간다.
     [SerializeField] private float _attackRange = 1.5f; // 공격 범위
     [SerializeField] private float _attackInterval = 1.2f; // 공격 간격
     [SerializeField] private float _moveSpeed = 5f;
@@ -35,10 +35,16 @@ public class Zombie : MonoBehaviour, IDamageable
     [SerializeField] private float _hitDuration = 0.5f;
     [SerializeField] private float _deathDestroyDelay = 2f;
 
+    [Header("패트롤")]
+    [SerializeField] private Transform[] _patrolPoints;
+
+    [SerializeField] private float _patrolSpeed = 1.5f;
+    [SerializeField] private float _idleDuration = 3f;
+
     [Header("이펙트")]
     [SerializeField] private GameObject _bloodSprayPrefab;
 
-    private Vector3 _startPosition;
+    private Vector3 _returnPosition;
     private GameObject _player;
     private NavMeshAgent _agent;
     private Animator _animator;
@@ -65,15 +71,20 @@ public class Zombie : MonoBehaviour, IDamageable
     public NavMeshAgent Agent => _agent;
     public Animator Animator => _animator;
     public GameObject Player => _player;
-    public Vector3 StartPosition => _startPosition;
+    public Vector3 ReturnPosition => _returnPosition;
     public float DetectDistance => _detectDistance;
     public float ComebackDistance => _comebackDistance;
     public float AttackRange => _attackRange;
     public float AttackInterval => _attackInterval;
     public float HitDuration => _hitDuration;
     public float DeathDestroyDelay => _deathDestroyDelay;
+    public float MoveSpeed => _moveSpeed; // Patrol.Exit에서 속도 복구용
+    public float PatrolSpeed => _patrolSpeed;
+    public float IdleDuration => _idleDuration;
+    public Transform[] PatrolPoints => _patrolPoints;
+    public bool HasPatrolPoints => _patrolPoints != null && _patrolPoints.Length > 0;
     public float DistanceToPlayer => Vector3.Distance(transform.position, _player.transform.position);
-    public float DistanceToStart => Vector3.Distance(transform.position, _startPosition);
+    public float DistanceToReturn => Vector3.Distance(transform.position, _returnPosition);
 
     public event Action<float, float> OnHealthChanged;
     public event Action<Zombie> OnDeath;
@@ -87,12 +98,13 @@ public class Zombie : MonoBehaviour, IDamageable
 
         _animator = GetComponentInChildren<Animator>();
 
-        _startPosition = transform.position;
+        _returnPosition = transform.position;
         _player = GameObject.FindGameObjectWithTag("Player");
 
         _states = new Dictionary<ZombieState, IZombieState>
         {
             { ZombieState.Idle, new ZombieIdleState(this) },
+            { ZombieState.Patrol, new ZombiePatrolState(this) },
             { ZombieState.Trace, new ZombieTraceState(this) },
             { ZombieState.Comeback, new ZombieComebackState(this) },
             { ZombieState.Attack, new ZombieAttackState(this) },
@@ -118,6 +130,18 @@ public class Zombie : MonoBehaviour, IDamageable
         _currentStateType = nextState;
         _currentState = _states[nextState];
         _currentState.Enter();
+    }
+
+    // 스포너가 생성 직후 순찰 경로를 넘겨준다.
+    public void SetPatrolPoints(Transform[] patrolPoints)
+    {
+        _patrolPoints = patrolPoints;
+    }
+
+    // 현재 위치를 복귀 위치로 기록
+    public void SetReturnPosition()
+    {
+        _returnPosition = transform.position;
     }
 
     public void TakeDamage(DamageInfo damageInfo)

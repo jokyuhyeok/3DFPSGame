@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// 수정: 포인트별 스포너 -> 1개의 스포너가 여러 스폰 포인트를 관리한다.
+// 포인트별 스포너 -> 1개의 스포너가 여러 스폰 포인트를 관리한다.
 // 동시에 살아있는 좀비가 최대 수 미만 -> 랜덤 시간후 랜덤 포인트(작전 포인트 제외)에서 한 마리씩 스폰한다.
 public class ZombieSpawner : MonoBehaviour
 {
@@ -15,6 +15,9 @@ public class ZombieSpawner : MonoBehaviour
 
     [SerializeField] private float _minSpawnDelay = 5f;
     [SerializeField] private float _maxSpawnDelay = 10f;
+
+    [Header("패트롤")]
+    [SerializeField] private Transform[] _patrolPoints;
 
     // 살아있는 좀비 목록
     private readonly List<Zombie> _aliveZombies = new List<Zombie>();
@@ -33,7 +36,7 @@ public class ZombieSpawner : MonoBehaviour
 
     private void OnDestroy()
     {
-        // [변경] 살아있는 모든 좀비의 구독 해제
+        // 살아있는 모든 좀비의 구독 해제
         foreach (Zombie zombie in _aliveZombies)
         {
             if (zombie != null)
@@ -43,8 +46,8 @@ public class ZombieSpawner : MonoBehaviour
         }
     }
 
-    // [추가] 최대 수 미만이고 스폰 대기 중이 아닐 때만 스폰 코루틴을 시작한다.
-    //        좀비 스폰 직후와 좀비 사망 직후, 두 시점에서만 호출된다. (폴링 없음)
+    // 최대 수 미만이고 스폰 대기 중이 아닐 때만 스폰 코루틴을 시작한다.
+    // 좀비 스폰 직후와 좀비 사망 직후, 두 시점에서만 호출된다. (폴링 없음)
     private void TryStartSpawn()
     {
         if (_spawnCoroutine != null) return;
@@ -55,7 +58,7 @@ public class ZombieSpawner : MonoBehaviour
 
     private IEnumerator Spawn_Coroutine()
     {
-        // [변경] 고정 지연 → 최소~최대 사이 랜덤 지연
+        // 고정 지연 → 최소~최대 사이 랜덤 지연
         float delay = UnityEngine.Random.Range(_minSpawnDelay, _maxSpawnDelay);
         yield return new WaitForSeconds(delay);
 
@@ -74,6 +77,7 @@ public class ZombieSpawner : MonoBehaviour
         Transform spawnPoint = _spawnPoints[GetRandomSpawnIndex()]; // [추가] 랜덤 포인트 선택
 
         Zombie zombie = Instantiate(_zombiePrefab, spawnPoint.position, spawnPoint.rotation);
+        zombie.SetPatrolPoints(_patrolPoints);
         zombie.OnDeath += HandleZombieDeath;
         _aliveZombies.Add(zombie);
 
@@ -104,7 +108,7 @@ public class ZombieSpawner : MonoBehaviour
         return index;
     }
 
-    // [변경] 매개변수로 어떤 좀비가 죽었는지 전달받는다.
+    // 매개변수로 어떤 좀비가 죽었는지 전달받는다.
     private void HandleZombieDeath(Zombie zombie)
     {
         zombie.OnDeath -= HandleZombieDeath;

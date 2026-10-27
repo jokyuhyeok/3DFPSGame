@@ -17,7 +17,7 @@ public class ZombieTraceState : IZombieState
 
     public void Execute()
     {
-        if (_zombie.DistanceToStart > _zombie.ComebackDistance)
+        if (_zombie.DistanceToReturn > _zombie.ComebackDistance)
         {
             _zombie.ChangeState(ZombieState.Comeback);
             return;
