@@ -20,6 +20,7 @@ public class Zombie : MonoBehaviour, IDamageable
 {
     [Header("스탯")]
     [SerializeField] private float _detectDistance = 8f;
+
     [SerializeField] private float _comebackDistance = 15f; // 처음 자리에서 이만큼 멀어지면 돌아간다.
     [SerializeField] private float _attackRange = 1.5f; // 공격 범위
     [SerializeField] private float _attackInterval = 1.2f; // 공격 간격
@@ -122,7 +123,8 @@ public class Zombie : MonoBehaviour, IDamageable
 
     private IEnumerator Hit_Coroutine()
     {
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.3f); // 이래도 NavMesh는 계속 이동
+        StopAgent();
 
         Debug.Log($"{_state} -> Hit");
         _state = ZombieState.Trace;
@@ -130,12 +132,15 @@ public class Zombie : MonoBehaviour, IDamageable
 
     private IEnumerator Death_Coroutine()
     {
+        StopAgent();
         yield return new WaitForSeconds(0.5f);
         Destroy(gameObject);
     }
 
     private void Idle()
     {
+        StopAgent();
+
         // player가 가까워지면 Trace 상태로 전이
         float distance = Vector3.Distance(transform.position, _player.transform.position);
         if (distance <= _detectDistance)
@@ -163,12 +168,17 @@ public class Zombie : MonoBehaviour, IDamageable
             return;
         }
 
+        // SetDestination은 목적지 설정
+        // - 한 번 세팅하면 내부에서 계속해서 이동 (O)
+        // - 호출할 때 마다 목적지를 향해 조금씩 이동 (X)
         _agent.SetDestination(_player.transform.position);
     }
 
     private void Comeback()
     {
-        if (Vector3.Distance(transform.position, _startPosition) < 1f)
+        // if(_agent.pathStatus == NavMeshPathStatus.PathComplete)
+        // if (_agent.remainingDistance < _agent.stoppingDistance)
+        if (Vector3.Distance(transform.position, _startPosition) > _agent.stoppingDistance)
         {
             Debug.Log($"{_state} -> Idle");
             _state = ZombieState.Idle;
@@ -180,6 +190,8 @@ public class Zombie : MonoBehaviour, IDamageable
 
     private void Attack()
     {
+        StopAgent();
+
         // player가 멀어지면 Trace 상태로 전이
         float distance = Vector3.Distance(transform.position, _player.transform.position);
         if (distance > _attackRange)
@@ -208,5 +220,11 @@ public class Zombie : MonoBehaviour, IDamageable
 
             _attackTimer = 0f;
         }
+    }
+
+    private void StopAgent()
+    {
+        _agent.ResetPath(); // 에이전트의 목적지 삭제
+        _agent.velocity = Vector3.zero; // 미끄럼 방지를 위해 가속도 제로!
     }
 }
