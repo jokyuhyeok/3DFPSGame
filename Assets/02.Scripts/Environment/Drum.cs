@@ -43,8 +43,7 @@ public class Drum : MonoBehaviour, IDamageable
         // 폭발 하기 전에 대기
         yield return new WaitForSeconds(_explosionDelay);
 
-        ParticleSystem effect = Instantiate(_explodeEffectPrefab, transform.position, Quaternion.identity);
-        effect.Play();
+        PoolManager.Instance.PlayEffect(_explodeEffectPrefab, transform.position, Quaternion.identity);
 
         _rigidbody.AddForce(Vector3.up * _launchPower, ForceMode.Impulse);
         _rigidbody.AddTorque(UnityEngine.Random.insideUnitSphere * _spinPower, ForceMode.Impulse);

@@ -37,6 +37,8 @@ public class Bomb : MonoBehaviour
         // Instantiate + Play → 풀에서 꺼내 재생 (끝나면 자동 반납)
         PoolManager.Instance.PlayEffect(_explosionEffectPrefab, transform.position, Quaternion.identity);
 
+        ApplyAreaDamage();
+
         // Destroy(gameObject) → 풀로 반납
         PoolManager.Instance.Release(gameObject);
     }
