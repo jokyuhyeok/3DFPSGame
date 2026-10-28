@@ -40,11 +40,7 @@ public class PlayerGunFire : MonoBehaviour
             _fireTimer = _fireInterval;
             Shoot();
 
-            // 서 있을 때(MoveMotion이 0)만 쏘는 동작을 한다.
-            if (_animator.GetFloat("MoveMotion") == 0f)
-            {
-                _animator.SetTrigger("Attack");
-            }
+            _animator.SetBool("Fire", true);
 
             // 이 방식은 이 MonoBehavior가 등록한 모든 코루틴을 실행 취소
             // StopAllCoroutines();
@@ -55,6 +51,10 @@ public class PlayerGunFire : MonoBehaviour
                 Debug.Log("재장전 취소!");
                 _reloadCoroutine = null;
             }
+        }
+        else
+        {
+            _animator.SetBool("Fire", false);
         }
 
         // 2. R키를 누르면 총알 재장전 시작
