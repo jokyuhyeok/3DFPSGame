@@ -1030,7 +1030,7 @@ MonoBehaviour:
   - {fileID: 622581339}
   - {fileID: 1728447866}
   - {fileID: 1400172657}
-  _maxZombieCount: 3
+  _maxZombieCount: 4
   _minSpawnDelay: 3
   _maxSpawnDelay: 7
 --- !u!1 &445796350
@@ -1708,8 +1708,8 @@ Transform:
   m_GameObject: {fileID: 552403794}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 10.732379, y: 4.1325, z: 7.507868}
-  m_LocalScale: {x: 1, y: 8.265, z: 39.35672}
+  m_LocalPosition: {x: 9.63, y: 4.1325, z: 7.507868}
+  m_LocalScale: {x: 1, y: 7, z: 39.35672}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 880086834}
@@ -3731,6 +3731,17 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: ea157e5e1917e124988e89c8fcbda8ec, type: 2}
+    - target: {fileID: 9500000, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'Bip001 L Hand'\n\tTransform 'Bip001 R Foot'\n\tTransform
+        'Bip001 R Finger0'\n\tTransform 'Bip001 R Toe0'\n\tTransform 'Bip001 Head'\n\tTransform
+        'Bip001 Spine1'\n\tTransform 'Bip001 R UpperArm'\n\tTransform 'Bip001 R Calf'\n\tTransform
+        'Bip001 L UpperArm'\n\tTransform 'Bip001 L Forearm'\n\tand more ...\n\tFrom
+        animation clip 'demo_combat_idle'\n\tFrom animation clip 'demo_combat_run'\n\tFrom
+        animation clip 'demo_combat_shoot'"
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4378,7 +4389,7 @@ Transform:
   m_GameObject: {fileID: 1739842659}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.117, y: 0.553, z: 0.373}
+  m_LocalPosition: {x: 0.117, y: 0.553, z: 0.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
