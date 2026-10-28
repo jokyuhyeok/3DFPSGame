@@ -16,7 +16,7 @@ public class ZombieDeathState : IZombieState
         _zombie.Animator.SetTrigger("Death");
         _zombie.StopAgent();
 
-        Object.Destroy(_zombie.gameObject, _zombie.DeathDestroyDelay);
+        PoolManager.Instance.Release(_zombie.gameObject, _zombie.DeathDestroyDelay);
     }
 
     public void Execute()

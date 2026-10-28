@@ -64,24 +64,26 @@ public class ZombieSpawner : MonoBehaviour
         Spawn();
 
         _spawnCoroutine = null;
-        TryStartSpawn(); // [추가] 아직 자리가 남았으면 다음 스폰 예약
+        TryStartSpawn(); // 아직 자리가 남았으면 다음 스폰 예약
     }
 
     private void Spawn()
     {
         if (_zombiePrefab == null || _spawnPoints.Length == 0) return;
 
-        SpawnPoint spawnPoint = _spawnPoints[GetRandomSpawnIndex()]; // [추가] 랜덤 포인트 선택
+        SpawnPoint spawnPoint = _spawnPoints[GetRandomSpawnIndex()]; // 랜덤 포인트 선택
 
-        Zombie zombie = Instantiate(_zombiePrefab, spawnPoint.transform.position, spawnPoint.transform.rotation);
+        Zombie zombie =
+            PoolManager.Instance.Get(_zombiePrefab, spawnPoint.transform.position, spawnPoint.transform.rotation);
         zombie.SetPatrolPoints(spawnPoint.PatrolPoints);
+
         zombie.OnDeath += HandleZombieDeath;
         _aliveZombies.Add(zombie);
 
-        OnZombieCountChanged?.Invoke(_aliveZombies.Count, _maxZombieCount); // [추가] 수 변경 알림
+        OnZombieCountChanged?.Invoke(_aliveZombies.Count, _maxZombieCount); // 수 변경 알림
     }
 
-    // [추가] 직전 인덱스를 제외한 랜덤 인덱스
+    // 직전 인덱스를 제외한 랜덤 인덱스
     // 예) 포인트 3개, 직전 1 → 0~1 중 뽑고, 1 이상이면 +1 → 결과는 0 또는 2
     private int GetRandomSpawnIndex()
     {

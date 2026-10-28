@@ -13,8 +13,12 @@ public class ZombiePatrolState : IZombieState
 
     public void Enter()
     {
-        _zombie.Agent.speed = _zombie.PatrolSpeed;
+        if (_pointIndex >= _zombie.PatrolPoints.Length)
+        {
+            _pointIndex = 0;
+        }
 
+        _zombie.Agent.speed = _zombie.PatrolSpeed;
         Transform target = _zombie.PatrolPoints[_pointIndex];
 
         if (target != null)

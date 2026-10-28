@@ -23,7 +23,6 @@ public class Zombie : MonoBehaviour, IDamageable
 {
     [Header("스탯")]
     [SerializeField] private float _detectDistance = 8f;
-
     [SerializeField] private float _comebackDistance = 15f; // 추적을 시작한 자리에서 이만큼 멀어지면 돌아간다.
     [SerializeField] private float _attackRange = 1.5f; // 공격 범위
     [SerializeField] private float _attackInterval = 1.2f; // 공격 간격
@@ -37,11 +36,11 @@ public class Zombie : MonoBehaviour, IDamageable
 
     [Header("패트롤")]
     [SerializeField] private float _patrolSpeed = 1.5f;
-
     [SerializeField] private float _idleDuration = 3f;
 
     [Header("이펙트")]
     [SerializeField] private GameObject _bloodSprayPrefab;
+    [SerializeField] private float _bloodSprayDuration = 1f;
 
     private Vector3 _returnPosition;
     private GameObject _player;
@@ -89,18 +88,15 @@ public class Zombie : MonoBehaviour, IDamageable
     public event Action<float, float> OnHealthChanged;
     public event Action<Zombie> OnDeath;
 
-    private void Start()
+    // Start가 아니라 Awake인 이유 : 처음 켜질 때 Awake -> OnEnable -> Start 순서라서
+    // OnEnable에서 쓸 참조들은 Awake에서 준비되어 있어야 한다.
+    private void Awake()
     {
-        _health = _maxhealth;
-
         _agent = GetComponent<NavMeshAgent>(); // 길을 찾아 걷게 해주는 컴포넌트를 찾아서 참조
-        _agent.speed = _moveSpeed;
-
         _animator = GetComponentInChildren<Animator>();
-
-        _returnPosition = transform.position;
         _player = GameObject.FindGameObjectWithTag("Player");
 
+        // 상태 객체는 한 번 만들어서 계속 재사용
         _states = new Dictionary<ZombieState, IZombieState>
         {
             { ZombieState.Idle, new ZombieIdleState(this) },
@@ -111,7 +107,14 @@ public class Zombie : MonoBehaviour, IDamageable
             { ZombieState.Hit, new ZombieHitState(this) },
             { ZombieState.Death, new ZombieDeathState(this) },
         };
+    }
 
+    // 풀에서 꺼낼 때마다 실행: 이전 생애의 흔적을 지우고 새로운 상태로
+    private void OnEnable()
+    {
+        _health = _maxhealth;
+        _agent.speed = _moveSpeed;
+        _returnPosition = transform.position;
         ChangeState(ZombieState.Idle);
     }
 
@@ -152,10 +155,10 @@ public class Zombie : MonoBehaviour, IDamageable
 
         if (_health > 0f)
         {
-            GameObject bloodSpray = Instantiate(_bloodSprayPrefab, transform);
-            bloodSpray.transform.position = damageInfo.HitPoint;
-            bloodSpray.transform.forward = damageInfo.HitNormal;
-            Destroy(bloodSpray, 1f);
+            // 기존에는 좀비의 자식으로 생성되어 좀비를 따라다녔지만, 이제는 맞은 자리에 남는다.
+            GameObject bloodSpray = PoolManager.Instance.Get(_bloodSprayPrefab, damageInfo.HitPoint,
+                Quaternion.LookRotation(damageInfo.HitNormal));
+            PoolManager.Instance.Release(bloodSpray, _bloodSprayDuration);
 
             ChangeState(ZombieState.Hit);
         }
@@ -198,6 +201,7 @@ public class Zombie : MonoBehaviour, IDamageable
 
     public void StopAgent()
     {
+        if (!_agent.isOnNavMesh) return;
         _agent.ResetPath(); // 에이전트의 목적지 삭제
         _agent.velocity = Vector3.zero; // 미끄럼 방지를 위해 가속도 제로!
     }

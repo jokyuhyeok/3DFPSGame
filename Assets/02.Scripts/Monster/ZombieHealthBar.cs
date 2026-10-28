@@ -18,6 +18,9 @@ public class ZombieHealthBar : MonoBehaviour
         // 좀비의 체력에 내 체력바 연결을 하겠다.
         _zombie.OnHealthChanged += UpdateHealthBar;
         _zombie.OnDeath += HideHealthBar;
+
+        _slider.gameObject.SetActive(true);
+        _slider.value = 1f;
     }
 
     private void OnDisable()
