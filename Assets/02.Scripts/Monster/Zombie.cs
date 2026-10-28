@@ -36,9 +36,8 @@ public class Zombie : MonoBehaviour, IDamageable
     [SerializeField] private float _deathDestroyDelay = 2f;
 
     [Header("패트롤")]
-    [SerializeField] private Transform[] _patrolPoints;
-
     [SerializeField] private float _patrolSpeed = 1.5f;
+
     [SerializeField] private float _idleDuration = 3f;
 
     [Header("이펙트")]
@@ -48,6 +47,7 @@ public class Zombie : MonoBehaviour, IDamageable
     private GameObject _player;
     private NavMeshAgent _agent;
     private Animator _animator;
+    private Transform[] _patrolPoints;
 
     // 상태 머신
     private Dictionary<ZombieState, IZombieState> _states;

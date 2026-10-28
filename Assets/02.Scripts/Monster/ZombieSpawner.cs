@@ -8,16 +8,13 @@ using UnityEngine;
 public class ZombieSpawner : MonoBehaviour
 {
     [SerializeField] private Zombie _zombiePrefab;
-    [SerializeField] private Transform[] _spawnPoints; // 씬의 스폰 포인트들을 연결
+    [SerializeField] private SpawnPoint[] _spawnPoints; // 씬의 스폰 포인트들을 연결
 
     [Header("스폰 설정")]
     [SerializeField] private int _maxZombieCount = 5;
 
     [SerializeField] private float _minSpawnDelay = 5f;
     [SerializeField] private float _maxSpawnDelay = 10f;
-
-    [Header("패트롤")]
-    [SerializeField] private Transform[] _patrolPoints;
 
     // 살아있는 좀비 목록
     private readonly List<Zombie> _aliveZombies = new List<Zombie>();
@@ -74,10 +71,10 @@ public class ZombieSpawner : MonoBehaviour
     {
         if (_zombiePrefab == null || _spawnPoints.Length == 0) return;
 
-        Transform spawnPoint = _spawnPoints[GetRandomSpawnIndex()]; // [추가] 랜덤 포인트 선택
+        SpawnPoint spawnPoint = _spawnPoints[GetRandomSpawnIndex()]; // [추가] 랜덤 포인트 선택
 
-        Zombie zombie = Instantiate(_zombiePrefab, spawnPoint.position, spawnPoint.rotation);
-        zombie.SetPatrolPoints(_patrolPoints);
+        Zombie zombie = Instantiate(_zombiePrefab, spawnPoint.transform.position, spawnPoint.transform.rotation);
+        zombie.SetPatrolPoints(spawnPoint.PatrolPoints);
         zombie.OnDeath += HandleZombieDeath;
         _aliveZombies.Add(zombie);
 
