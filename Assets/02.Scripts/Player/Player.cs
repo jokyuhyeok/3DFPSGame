@@ -25,7 +25,7 @@ public class Player : MonoBehaviour, IDamageable
     private void Awake()
     {
         _animator = GetComponentInChildren<Animator>();
-        _injuredLayerIndex = _animator.GetLayerIndex("Injured");
+        _injuredLayerIndex = _animator.GetLayerIndex("Injured Layer");
         _health = _maxHealth;
     }
 

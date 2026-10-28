@@ -19,4 +19,23 @@ public class PooledObject : MonoBehaviour
     {
         _isReleased = false;
     }
+
+    public void Release()
+    {
+        if (_isReleased) return; // 중복 반납 방지
+
+        _isReleased = true;
+        _pool.Release(gameObject);
+    }
+
+    public void ReleaseAfter(float delay)
+    {
+        StartCoroutine(ReleaseAfter_Coroutine(delay));
+    }
+
+    private IEnumerator ReleaseAfter_Coroutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Release();
+    }
 }

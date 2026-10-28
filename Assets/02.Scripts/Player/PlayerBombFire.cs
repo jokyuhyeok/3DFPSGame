@@ -72,8 +72,9 @@ public class PlayerBombFire : MonoBehaviour
 
     private void Shoot()
     {
-        // 발사 위치에서 폭탄 생성하기
-        Bomb bomb = Instantiate(_bombPrefab, _firePoint.position, Quaternion.identity);
+        // 발사 위치에서 폭탄 풀에서 꺼내기
+        Bomb bomb = PoolManager.Instance.Get(_bombPrefab, _firePoint.position, Quaternion.identity);
+
 
         _currentbombcount--;
         Debug.Log($"폭탄 투척.. 남은 개수: {_currentbombcount}/{_maxbombcount}");
@@ -85,8 +86,7 @@ public class PlayerBombFire : MonoBehaviour
         }
 
         // 생성된 수류탄을 시선 방향으로 던지기
-        Rigidbody rigidbody = bomb.GetComponent<Rigidbody>();
-        rigidbody.AddForce(Camera.main.transform.forward * _currentThrowPower, ForceMode.Impulse);
+        bomb.Throw(Camera.main.transform.forward * _currentThrowPower);
 
         _currentThrowPower = _minThrowPower;
     }
