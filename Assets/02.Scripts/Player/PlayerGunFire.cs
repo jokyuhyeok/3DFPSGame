@@ -39,13 +39,15 @@ public class PlayerGunFire : MonoBehaviour
 
         // 1. 마우스 왼쪽 버튼 입력 받기
         bool isMouseVisible = Cursor.visible;
-        if (!isMouseVisible && Input.GetButton("Fire1") && _fireTimer <= 0f && _bulletCount > 0)
+        bool isFiring = !isMouseVisible && Input.GetButton("Fire1") && _bulletCount > 0;
+
+        _animator.SetBool("Fire", isFiring);
+
+        if (isFiring && _fireTimer <= 0f)
         {
             _bulletCount--;
             _fireTimer = _fireInterval;
             Shoot();
-
-            _animator.SetBool("Fire", true);
 
             // 이 방식은 이 MonoBehavior가 등록한 모든 코루틴을 실행 취소
             // StopAllCoroutines();
@@ -56,10 +58,6 @@ public class PlayerGunFire : MonoBehaviour
                 Debug.Log("재장전 취소!");
                 _reloadCoroutine = null;
             }
-        }
-        else
-        {
-            _animator.SetBool("Fire", false);
         }
 
         // 2. R키를 누르면 총알 재장전 시작
