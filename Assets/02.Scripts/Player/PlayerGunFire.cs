@@ -6,6 +6,11 @@ public class PlayerGunFire : MonoBehaviour
 {
     [SerializeField] private ParticleSystem _hitEffectPrefab;
 
+    [Header("레이저 선")]
+    [SerializeField] private Transform _muzzle; // 총구 위치 (선의 시작점)
+
+    [SerializeField] private BulletLine _bulletLinePrefab;
+
     [Header("스탯")]
     [SerializeField] private float _range = 100f; // 사거리
 
@@ -88,6 +93,10 @@ public class PlayerGunFire : MonoBehaviour
 
         // 4. 레이를 발사하고, 만일 부딪힌 물체가 있다면 이펙트 표시하기
         bool isHit = Physics.Raycast(ray, out hitInfo, _range);
+
+        Vector3 endPoint = isHit ? hitInfo.point : ray.GetPoint(_range);
+        ShowBulletLine(endPoint);
+
         if (isHit)
         {
             //Debug.Log($"{hitInfo.collider.name}이 총알을 맞았다. 데미지: {_damage}");
@@ -106,5 +115,13 @@ public class PlayerGunFire : MonoBehaviour
             hitInfo.collider.GetComponent<Box>()?.TakeDamage(_damage);
             */
         }
+    }
+
+    private void ShowBulletLine(Vector3 endPoint)
+    {
+        if (_bulletLinePrefab == null || _muzzle == null) return;
+
+        BulletLine line = PoolManager.Instance.Get(_bulletLinePrefab, _muzzle.position, Quaternion.identity);
+        line.Show(_muzzle.position, endPoint);
     }
 }
