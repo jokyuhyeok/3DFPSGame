@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     public GameState State => _state;
 
     [SerializeField] private TextMeshProUGUI _stateText;
+    [SerializeField] private Animator _animator;
 
     private void Awake()
     {
@@ -53,5 +54,11 @@ public class GameManager : MonoBehaviour
         _stateText.gameObject.SetActive(true);
         _stateText.text = "게임 오버";
         _stateText.color = Color.red;
+
+        // 서 있을 때(MoveMotion이 0)만 쏘는 동작을 한다.
+        if (_animator.GetFloat("MoveMotion") == 0f)
+        {
+            _animator.SetTrigger("Attack");
+        }
     }
 }
