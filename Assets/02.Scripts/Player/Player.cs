@@ -11,10 +11,12 @@ public class Player : MonoBehaviour, IDamageable
     [SerializeField] private UI_HitEffect _hitEffect; // 맞았을 때 화면 효과
 
     private float _health; // 현재 체력
+    private WeaponMode _weaponMode = WeaponMode.Normal;
 
     // UI가 읽어 가는 값 (읽기만 할 수 있다)
     public float Health => _health;
     public float MaxHealth => _maxHealth;
+    public WeaponMode WeaponMode => _weaponMode;
 
     // Action 자료형: 함수를 저장할 수 있다.
     public event Action OnDamaged;
@@ -27,6 +29,20 @@ public class Player : MonoBehaviour, IDamageable
         _animator = GetComponentInChildren<Animator>();
         _injuredLayerIndex = _animator.GetLayerIndex("Injured Layer");
         _health = _maxHealth;
+    }
+
+    private void Update()
+    {
+        if (GameManager.Instance.State != GameState.Playing) return;
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            _weaponMode = WeaponMode.Normal;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            _weaponMode = WeaponMode.Sniper;
+        }
     }
 
     // 대미지를 받는다.

@@ -26,11 +26,13 @@ public class PlayerBombFire : MonoBehaviour
 
     private float _currentThrowPower = 0f;
     private bool _isCharging = false;
+    private Player _player;
 
     private void Awake()
     {
         _currentbombcount = _maxbombcount;
         _currentThrowPower = _minThrowPower;
+        _player = GetComponent<Player>();
     }
 
     private void Update()
@@ -51,6 +53,12 @@ public class PlayerBombFire : MonoBehaviour
             return;
         }
 
+        if (_player.WeaponMode != WeaponMode.Normal)
+        {
+            _isCharging = false;
+            return;
+        }
+
         if (_currentbombcount <= 0) return;
 
         // 마우스 오른쪽 버튼 입력 받기 (이제 회전과 겹치지 않는 폭탄 전용 버튼)
@@ -66,7 +74,7 @@ public class PlayerBombFire : MonoBehaviour
             _currentThrowPower = Mathf.Min(_maxThrowPower, _currentThrowPower);
         }
 
-        if (Input.GetButtonUp("Fire2"))
+        if (Input.GetButtonUp("Fire2") && _isCharging)
         {
             _isCharging = false;
             Shoot();
