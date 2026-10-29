@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 // 마우스 오른쪽 버튼을 누르면 조준 방향으로 폭탄을 던진다.
 // [변경] 커서 조준 시점에서는 커서 쪽으로 포물선을 그리며 던진다.
@@ -28,6 +29,10 @@ public class PlayerBombFire : MonoBehaviour
     private bool _isCharging = false;
     private Player _player;
 
+    public int BombCount => _currentbombcount;
+    public int MaxBombCount => _maxbombcount;
+    public event System.Action<int> OnBombChanged;
+
     private void Awake()
     {
         _currentbombcount = _maxbombcount;
@@ -48,6 +53,7 @@ public class PlayerBombFire : MonoBehaviour
             {
                 _currentbombcount = _maxbombcount;
                 _isCooldown = false;
+                OnBombChanged?.Invoke(_currentbombcount);
             }
 
             return;
@@ -87,6 +93,7 @@ public class PlayerBombFire : MonoBehaviour
         Bomb bomb = PoolManager.Instance.Get(_bombPrefab, _firePoint.position, Quaternion.identity);
 
         _currentbombcount--;
+        OnBombChanged?.Invoke(_currentbombcount);
         Debug.Log($"폭탄 투척.. 남은 개수: {_currentbombcount}/{_maxbombcount}");
 
         if (_currentbombcount <= 0)

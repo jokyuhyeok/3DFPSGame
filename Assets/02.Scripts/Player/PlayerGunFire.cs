@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections;
 
 // 마우스 왼쪽 버튼을 누르면 조준 방향으로 총알을 발사한다.
@@ -25,14 +26,19 @@ public class PlayerGunFire : MonoBehaviour
     private int _bulletCount = 0;
     private Coroutine _reloadCoroutine = null;
     private Animator _animator;
-    private int _hitLayerMask; // [추가] 총알이 맞을 수 있는 레이어
+    private int _hitLayerMask; // 총알이 맞을 수 있는 레이어
 
-    private void Start()
+    public int BulletCount => _bulletCount;
+    public int MaxBulletCount => _maxBulletCount;
+
+    public event Action<int, int> OnBulletChanged;
+
+    private void Awake()
     {
         _bulletCount = _maxBulletCount;
         _animator = GetComponentInChildren<Animator>();
 
-        // [추가] Player 레이어 제외
+        // Player 레이어 제외
         // 3인칭에서는 카메라 → 조준점 레이가 플레이어 몸을 지나가므로, 빼지 않으면 자기 자신을 쏜다.
         _hitLayerMask = ~LayerMask.GetMask("Player");
     }
@@ -54,6 +60,8 @@ public class PlayerGunFire : MonoBehaviour
         if (isFiring && _fireTimer <= 0f)
         {
             _bulletCount--;
+            OnBulletChanged?.Invoke(_bulletCount, _maxBulletCount);
+
             _fireTimer = _fireInterval;
             Shoot();
 
@@ -77,6 +85,8 @@ public class PlayerGunFire : MonoBehaviour
         Debug.Log("재장전 시작!");
         yield return new WaitForSeconds(_reloadingTime);
         _bulletCount = _maxBulletCount;
+        OnBulletChanged?.Invoke(_bulletCount, _maxBulletCount);
+
         Debug.Log("재장전 완료!");
         _reloadCoroutine = null;
     }
