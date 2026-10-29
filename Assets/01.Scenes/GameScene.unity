@@ -1825,7 +1825,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   _stateText: {fileID: 518826728}
-  _playerAnimator: {fileID: 0}
+  _playerAnimator: {fileID: 1387553527}
 --- !u!4 &505460647
 Transform:
   m_ObjectHideFlags: 0
@@ -4689,6 +4689,11 @@ CanvasRenderer:
 --- !u!4 &1387553526 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c01310ed281df834182922252a702218, type: 3}
+  m_PrefabInstance: {fileID: 599159694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1387553527 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: c01310ed281df834182922252a702218, type: 3}
   m_PrefabInstance: {fileID: 599159694}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1390030629
