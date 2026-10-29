@@ -14,6 +14,11 @@ public class PlayerGunFire : MonoBehaviour
 
     [SerializeField] private BulletLine _bulletLinePrefab;
 
+    [Header("총구 불꽃")]
+    [SerializeField] private GameObject[] _muzzleFlashes; // 총구 불꽃 (이 가운데 하나를 켠다)
+
+    [SerializeField] private float _flashTime = 0.05f; // 불꽃이 보이는 시간 (초)
+
     [Header("스탯")]
     [SerializeField] private float _range = 100f; // 사거리
 
@@ -27,6 +32,9 @@ public class PlayerGunFire : MonoBehaviour
     private Coroutine _reloadCoroutine = null;
     private Animator _animator;
     private int _hitLayerMask; // 총알이 맞을 수 있는 레이어
+
+    private Coroutine _flashCoroutine = null; // 지금 돌고 있는 불꽃 코루틴
+    private GameObject _currentFlash = null; // 지금 켜져 있는 불꽃
 
     public int BulletCount => _bulletCount;
     public int MaxBulletCount => _maxBulletCount;
@@ -93,6 +101,8 @@ public class PlayerGunFire : MonoBehaviour
 
     private void Shoot()
     {
+        PlayMuzzleFlash();
+
         // [변경] 레이 = 시점에 맞는 조준 레이
         // - 중앙 조준: 카메라 → 화면 중앙 (기존과 동일)
         // - 커서 조준: 총구 → 커서가 가리키는 곳
@@ -116,6 +126,33 @@ public class PlayerGunFire : MonoBehaviour
             damageInfo.HitNormal = hitInfo.normal;
             hitInfo.collider.GetComponent<IDamageable>()?.TakeDamage(damageInfo);
         }
+    }
+
+    // 이전 불꽃을 정리하고 새 불꽃 코루틴을 시작한다.
+    private void PlayMuzzleFlash()
+    {
+        if (_muzzleFlashes == null || _muzzleFlashes.Length == 0) return; // 연결 안 했으면 건너뛴다.
+
+        // 이전 불꽃이 아직 켜져 있으면 끄고 시작 (불꽃 두 개가 겹치지 않게)
+        if (_flashCoroutine != null)
+        {
+            StopCoroutine(_flashCoroutine);
+            _currentFlash.SetActive(false);
+        }
+
+        _flashCoroutine = StartCoroutine(MuzzleFlash_Coroutine());
+    }
+
+    // 불꽃 하나를 무작위로 골라 잠깐 켰다가 끈다.
+    private IEnumerator MuzzleFlash_Coroutine()
+    {
+        _currentFlash = _muzzleFlashes[UnityEngine.Random.Range(0, _muzzleFlashes.Length)];
+        _currentFlash.SetActive(true);
+
+        yield return new WaitForSeconds(_flashTime);
+
+        _currentFlash.SetActive(false);
+        _flashCoroutine = null;
     }
 
     private void ShowBulletLine(Vector3 endPoint)
