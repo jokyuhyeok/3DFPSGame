@@ -1,10 +1,12 @@
 using UnityEngine;
 
-// 마우스 오른쪽 버튼을 누르면 시선이 바라보는 방향으로 폭탄을 던지게 하겠다.
+// 마우스 오른쪽 버튼을 누르면 조준 방향으로 폭탄을 던진다.
+// [변경] 커서 조준 시점에서는 커서 쪽으로 포물선을 그리며 던진다.
 public class PlayerBombFire : MonoBehaviour
 {
     [SerializeField] private Transform _firePoint;
     [SerializeField] private Bomb _bombPrefab;
+    [SerializeField] private CameraViewSwitcher _cameraView; // [추가]
 
     [Header("폭탄 개수 제한 및 쿨타임 설정")]
     [SerializeField] private int _maxbombcount = 10;
@@ -16,6 +18,7 @@ public class PlayerBombFire : MonoBehaviour
 
     [SerializeField] private float _maxThrowPower = 25f;
     [SerializeField] private float _chargeSpeed = 5f;
+    [SerializeField] private float _cursorThrowArc = 0.5f; // [추가] 커서 조준 시 위로 띄우는 정도 (클수록 높은 포물선)
 
     private int _currentbombcount = 0;
     private float _cooldownTimer = 0;
@@ -50,7 +53,7 @@ public class PlayerBombFire : MonoBehaviour
 
         if (_currentbombcount <= 0) return;
 
-        // 마우스 오른쪽 버튼 입력 받기
+        // 마우스 오른쪽 버튼 입력 받기 (이제 회전과 겹치지 않는 폭탄 전용 버튼)
         if (Input.GetButtonDown("Fire2"))
         {
             _isCharging = true;
@@ -75,7 +78,6 @@ public class PlayerBombFire : MonoBehaviour
         // 발사 위치에서 폭탄 풀에서 꺼내기
         Bomb bomb = PoolManager.Instance.Get(_bombPrefab, _firePoint.position, Quaternion.identity);
 
-
         _currentbombcount--;
         Debug.Log($"폭탄 투척.. 남은 개수: {_currentbombcount}/{_maxbombcount}");
 
@@ -85,8 +87,18 @@ public class PlayerBombFire : MonoBehaviour
             _cooldownTimer = _cooldownDuration;
         }
 
-        // 생성된 수류탄을 시선 방향으로 던지기
-        bomb.Throw(Camera.main.transform.forward * _currentThrowPower);
+        // [변경] 던지는 방향
+        // - 중앙 조준: 시선 방향 (기존과 동일)
+        // - 커서 조준: 커서 쪽 + 위로 살짝 → 포물선 (기존처럼 카메라 정면이면 탑다운에서 발밑에 떨어짐)
+        Vector3 throwDirection = Camera.main.transform.forward;
+
+        if (_cameraView != null && _cameraView.IsCursorAim)
+        {
+            Vector3 aimDirection = _cameraView.GetAimRay(_firePoint.position).direction;
+            throwDirection = (aimDirection + Vector3.up * _cursorThrowArc).normalized;
+        }
+
+        bomb.Throw(throwDirection * _currentThrowPower);
 
         _currentThrowPower = _minThrowPower;
     }

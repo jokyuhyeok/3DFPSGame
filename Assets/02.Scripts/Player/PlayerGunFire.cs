@@ -1,10 +1,12 @@
 using UnityEngine;
 using System.Collections;
 
-// 마우스 왼쪽 버튼을 누르면 바라보는 방향으로 총알을 발사하고 싶다.
+// 마우스 왼쪽 버튼을 누르면 조준 방향으로 총알을 발사한다.
+// [변경] 조준 방향을 시점에 맞게 CameraViewSwitcher에게 물어본다.
 public class PlayerGunFire : MonoBehaviour
 {
     [SerializeField] private ParticleSystem _hitEffectPrefab;
+    [SerializeField] private CameraViewSwitcher _cameraView; // [추가] 조준 방향 제공
 
     [Header("레이저 선")]
     [SerializeField] private Transform _muzzle; // 총구 위치 (선의 시작점)
@@ -23,11 +25,16 @@ public class PlayerGunFire : MonoBehaviour
     private int _bulletCount = 0;
     private Coroutine _reloadCoroutine = null;
     private Animator _animator;
+    private int _hitLayerMask; // [추가] 총알이 맞을 수 있는 레이어
 
     private void Start()
     {
         _bulletCount = _maxBulletCount;
         _animator = GetComponentInChildren<Animator>();
+
+        // [추가] Player 레이어 제외
+        // 3인칭에서는 카메라 → 조준점 레이가 플레이어 몸을 지나가므로, 빼지 않으면 자기 자신을 쏜다.
+        _hitLayerMask = ~LayerMask.GetMask("Player");
     }
 
     private void Update()
@@ -37,10 +44,11 @@ public class PlayerGunFire : MonoBehaviour
         // 0. 발사 타이머를 지난 시간만큼 줄인다.
         _fireTimer -= Time.deltaTime;
 
-        // 1. 마우스 왼쪽 버튼 입력 받기
-        bool isMouseVisible = Cursor.visible;
-        bool isFiring = !isMouseVisible && Input.GetButton("Fire1") && _bulletCount > 0;
-
+        // 1. 쏘는 중인가? (버튼을 누르고 있고 쏠 수 있는 상태)
+        // [변경] Cursor.visible 검사 → CursorManager.IsUIMode
+        //        커서 조준 시점에서는 커서가 항상 보이므로, "Alt를 누르고 있는지"로 판단해야 한다.
+        // [변경] (2번 수정) 애니메이션 Fire = 누르는 동안 계속 true (총알이 나간 프레임만 true였던 문제)
+        bool isFiring = !CursorManager.Instance.IsUIMode && Input.GetButton("Fire1") && _bulletCount > 0;
         _animator.SetBool("Fire", isFiring);
 
         if (isFiring && _fireTimer <= 0f)
@@ -48,9 +56,6 @@ public class PlayerGunFire : MonoBehaviour
             _bulletCount--;
             _fireTimer = _fireInterval;
             Shoot();
-
-            // 이 방식은 이 MonoBehavior가 등록한 모든 코루틴을 실행 취소
-            // StopAllCoroutines();
 
             if (_reloadCoroutine != null)
             {
@@ -78,26 +83,20 @@ public class PlayerGunFire : MonoBehaviour
 
     private void Shoot()
     {
-        // Ray: 레이저(시작위치, 날아갈 방향)
-        // Physics.RayCast: 레이저를 발사
-        // RayCastHit: 레이저가 물체와 부딪히면 그 정보를 저장하는 구조체
+        // [변경] 레이 = 시점에 맞는 조준 레이
+        // - 중앙 조준: 카메라 → 화면 중앙 (기존과 동일)
+        // - 커서 조준: 총구 → 커서가 가리키는 곳
+        Vector3 origin = _muzzle != null ? _muzzle.position : transform.position;
+        Ray ray = _cameraView.GetAimRay(origin);
 
-        // 2. 레이(광선)를 생성하고 발사될 위치와 진행 방향 설정하기
-        Transform cameraTransform = Camera.main.transform;
-        Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
-
-        // 3. 레이가 부딪힌 대상의 정보를 저장할 변수 생성하기
-        RaycastHit hitInfo = new RaycastHit();
-
-        // 4. 레이를 발사하고, 만일 부딪힌 물체가 있다면 이펙트 표시하기
-        bool isHit = Physics.Raycast(ray, out hitInfo, _range);
+        RaycastHit hitInfo;
+        bool isHit = Physics.Raycast(ray, out hitInfo, _range, _hitLayerMask); // [변경] Player 레이어 제외
 
         Vector3 endPoint = isHit ? hitInfo.point : ray.GetPoint(_range);
         ShowBulletLine(endPoint);
 
         if (isHit)
         {
-            //Debug.Log($"{hitInfo.collider.name}이 총알을 맞았다. 데미지: {_damage}");
             PoolManager.Instance.PlayEffect(_hitEffectPrefab, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
 
             // 데미지 구조체 만들기
@@ -106,12 +105,6 @@ public class PlayerGunFire : MonoBehaviour
             damageInfo.HitPoint = hitInfo.point;
             damageInfo.HitNormal = hitInfo.normal;
             hitInfo.collider.GetComponent<IDamageable>()?.TakeDamage(damageInfo);
-
-            /*
-            hitInfo.collider.GetComponent<Zombie>()?.TakeDamage(_damage);
-            hitInfo.collider.GetComponent<Drum>()?.TakeDamage(_damage);
-            hitInfo.collider.GetComponent<Box>()?.TakeDamage(_damage);
-            */
         }
     }
 

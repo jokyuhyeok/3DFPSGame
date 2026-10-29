@@ -615,8 +615,6 @@ GameObject:
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
-  - component: {fileID: 330585548}
-  - component: {fileID: 330585549}
   - component: {fileID: 330585550}
   m_Layer: 0
   m_Name: Main Camera
@@ -743,32 +741,6 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!114 &330585548
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 330585543}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2b2f0e401cee3f45abc8cf8fbe8101d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CameraRotate
-  _rotationSpeed: 200
---- !u!114 &330585549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 330585543}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca77debc5fd1ffb45929ec3acf160be6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CameraFollow
-  _target: {fileID: 1739842660}
 --- !u!114 &330585550
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -782,31 +754,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraViewSwitcher
   _target: {fileID: 1739842660}
+  _player: {fileID: 1098097663}
   _presets:
   - viewType: 0
+    aimMode: 0
     localPosition: {x: 0, y: 0, z: 0}
     localRotation: {x: 0, y: 0, z: 0}
-    enableMouseRotate: 1
   - viewType: 1
-    localPosition: {x: 0, y: 0, z: -6}
-    localRotation: {x: 15, y: 0, z: 0}
-    enableMouseRotate: 0
+    aimMode: 0
+    localPosition: {x: 0, y: 0.3, z: -4}
+    localRotation: {x: 5, y: 0, z: 0}
   - viewType: 2
-    localPosition: {x: 1.5, y: 0, z: -4}
-    localRotation: {x: 5, y: -5, z: 0}
-    enableMouseRotate: 0
+    aimMode: 0
+    localPosition: {x: 0.7, y: 0.1, z: -2}
+    localRotation: {x: 0, y: 0, z: 0}
   - viewType: 3
-    localPosition: {x: -5, y: 7, z: -6}
+    aimMode: 1
+    localPosition: {x: -6, y: 8, z: -6}
     localRotation: {x: 45, y: 45, z: 0}
-    enableMouseRotate: 0
   - viewType: 4
-    localPosition: {x: 0, y: 12, z: 4}
+    aimMode: 1
+    localPosition: {x: 0, y: 12, z: 0}
     localRotation: {x: 90, y: 0, z: 0}
-    enableMouseRotate: 0
   - viewType: 5
-    localPosition: {x: 10, y: 0, z: 3}
+    aimMode: 1
+    localPosition: {x: 10, y: 0.5, z: 0}
     localRotation: {x: 0, y: -90, z: 0}
-    enableMouseRotate: 0
+  _crosshair: {fileID: 474919518}
+  _rotationSpeed: 200
+  _minPitch: -90
+  _maxPitch: 90
+  _transitionDuration: 0.3
 --- !u!1 &379538551
 GameObject:
   m_ObjectHideFlags: 0
@@ -3382,6 +3360,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerRotate
   _rotationSpeed: 200
+  _cameraView: {fileID: 330585550}
 --- !u!114 &1098097665
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3402,6 +3381,7 @@ MonoBehaviour:
   _sprintCost: 20
   _jumpCost: 20
   _characterController: {fileID: 1098097666}
+  _cameraView: {fileID: 330585550}
 --- !u!143 &1098097666
 CharacterController:
   m_ObjectHideFlags: 0
@@ -3440,6 +3420,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerGunFire
   _hitEffectPrefab: {fileID: 19800002, guid: 54dd9cb5740188a488b8baebbf19207c, type: 3}
+  _cameraView: {fileID: 330585550}
   _muzzle: {fileID: 2097741989}
   _bulletLinePrefab: {fileID: 2097523393981479077, guid: d3743917e7f84fa44832eb398db89c7f, type: 3}
   _range: 100
@@ -3461,11 +3442,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerBombFire
   _firePoint: {fileID: 4291940}
   _bombPrefab: {fileID: 6830306511738657237, guid: 3fa2167c91d061d40b1f03ffbbb03e6b, type: 3}
+  _cameraView: {fileID: 330585550}
   _maxbombcount: 10
   _cooldownDuration: 60
   _minThrowPower: 5
   _maxThrowPower: 25
   _chargeSpeed: 5
+  _cursorThrowArc: 0.5
 --- !u!114 &1098097669
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -24,6 +24,8 @@ public class PlayerMove : MonoBehaviour
     [Header("컴포넌트")]
     [SerializeField] private CharacterController _characterController;
 
+    [SerializeField] private CameraViewSwitcher _cameraView; // [추가] 이동 기준 방향
+
     private Animator _animator;
 
     private void Awake()
@@ -48,9 +50,18 @@ public class PlayerMove : MonoBehaviour
         Vector3 direction = new Vector3(h, 0, v);
         direction.Normalize();
         _animator.SetFloat("MoveMotion", direction.magnitude);
-        direction = transform.TransformDirection(direction);
-        // 로컬 좌표계 : 한 대상을 중심
-        // 월드 좌표계 : 세상을 중심
+
+        // [변경] 몸 방향 기준 → 화면(카메라) 기준
+        // - 중앙 조준 시점: 카메라 좌우 = 몸 좌우 → 기존과 동일
+        // - 커서 조준 시점: 몸은 커서를 보고 있으므로, W는 몸 앞이 아니라 "화면 위"로 가야 자연스럽다.
+        if (_cameraView != null)
+        {
+            direction = Quaternion.Euler(0f, _cameraView.MoveYaw, 0f) * direction;
+        }
+        else
+        {
+            direction = transform.TransformDirection(direction); // 연결 안 했으면 기존 방식
+        }
 
         // 3. 땅에 서있지 않을때만 중력을 누적한다.
         if (_characterController.isGrounded == false)
@@ -86,7 +97,6 @@ public class PlayerMove : MonoBehaviour
         velocity.y = _yVelocity;
 
         // 6. 속도(방향과 속력)에 따라 이동한다. 
-        //transform.position += direction * _moveSpeed * Time.deltaTime;
         _characterController.Move(velocity * Time.deltaTime);
     }
 }
