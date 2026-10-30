@@ -2619,7 +2619,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2412161367050800168, guid: c01310ed281df834182922252a702218, type: 3}
       insertIndex: -1
       addedObject: {fileID: 749248858}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c01310ed281df834182922252a702218, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1735724252}
   m_SourcePrefab: {fileID: 100100000, guid: c01310ed281df834182922252a702218, type: 3}
 --- !u!1 &603940487
 GameObject:
@@ -3978,7 +3981,6 @@ GameObject:
   - component: {fileID: 1098097669}
   - component: {fileID: 1098097666}
   - component: {fileID: 1098097670}
-  - component: {fileID: 1098097671}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -4152,18 +4154,6 @@ MonoBehaviour:
   _crosshair: {fileID: 474919518}
   _normalPov: 60
   _sniperPov: 15
---- !u!114 &1098097671
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1098097659}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c09a91bb9d624da4abaed2b53115bf32, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerMeleeAttack
 --- !u!1 &1118929695
 GameObject:
   m_ObjectHideFlags: 0
@@ -5026,6 +5016,7 @@ GameObject:
   - component: {fileID: 1577889609}
   - component: {fileID: 1577889611}
   - component: {fileID: 1577889610}
+  - component: {fileID: 1577889612}
   m_Layer: 2
   m_Name: Blade
   m_TagString: Untagged
@@ -5090,12 +5081,25 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.1, y: 0.1, z: 1.2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1577889612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577889608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d00e6ce8e7b65cf49b5dea83c427a60d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Katana
+  _damage: 25
 --- !u!1 &1623342623
 GameObject:
   m_ObjectHideFlags: 0
@@ -5464,6 +5468,24 @@ MonoBehaviour:
   - {fileID: 580897999}
   - {fileID: 720075289}
   _gizmoColor: {r: 0, g: 0.06285143, b: 1, a: 1}
+--- !u!1 &1735724251 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: c01310ed281df834182922252a702218, type: 3}
+  m_PrefabInstance: {fileID: 599159694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1735724252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1735724251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c09a91bb9d624da4abaed2b53115bf32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMeleeAttack
+  _katanaCollider: {fileID: 1577889611}
 --- !u!1 &1739842659
 GameObject:
   m_ObjectHideFlags: 0

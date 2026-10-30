@@ -5,14 +5,14 @@ public class PlayerMeleeAttack : MonoBehaviour
 {
     private Player _player;
     private Animator _animator;
-    private int _meleeLayetIndex;
+    private int _meleeLayerIndex;
     [SerializeField] private Collider _katanaCollider;
 
     private void Awake()
     {
-        _player = GetComponent<Player>();
+        _player = GetComponentInParent<Player>();
         _animator = GetComponentInChildren<Animator>();
-        _meleeLayetIndex = _animator.GetLayerIndex("Melee Layer");
+        _meleeLayerIndex = _animator.GetLayerIndex("Melee Layer");
     }
 
     // 람다식을 활용한 함수
