@@ -805,6 +805,7 @@ MonoBehaviour:
   _modeIcons:
   - {fileID: 21300000, guid: 9699dfeb306101d4bbed3fe592061608, type: 3}
   - {fileID: 21300000, guid: e0a03b457d8848e44b4a882728783dce, type: 3}
+  - {fileID: 21300000, guid: 867471ca727194a4e9229f128bd90a54, type: 3}
   _modeText: {fileID: 1390030631}
   _bulletText: {fileID: 1903448450}
   _bombText: {fileID: 844130244}
@@ -3981,6 +3982,7 @@ GameObject:
   - component: {fileID: 1098097669}
   - component: {fileID: 1098097666}
   - component: {fileID: 1098097670}
+  - component: {fileID: 1098097671}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -4154,6 +4156,21 @@ MonoBehaviour:
   _crosshair: {fileID: 474919518}
   _normalPov: 60
   _sniperPov: 15
+--- !u!114 &1098097671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1098097659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1c677c64d8c79a4488a469b3d90eb67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerWeaponVisual
+  _gunHolder: {fileID: 749248857}
+  _swordHolder: {fileID: 823369032}
+  _bladeCollider: {fileID: 0}
 --- !u!1 &1118929695
 GameObject:
   m_ObjectHideFlags: 0

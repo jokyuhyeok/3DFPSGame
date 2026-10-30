@@ -7,7 +7,7 @@ using System.Collections;
 public class PlayerGunFire : MonoBehaviour
 {
     [SerializeField] private ParticleSystem _hitEffectPrefab;
-    [SerializeField] private CameraViewSwitcher _cameraView; // [추가] 조준 방향 제공
+    [SerializeField] private CameraViewSwitcher _cameraView; // 조준 방향 제공
 
     [Header("레이저 선")]
     [SerializeField] private Transform _muzzle; // 총구 위치 (선의 시작점)
@@ -32,6 +32,7 @@ public class PlayerGunFire : MonoBehaviour
     private Coroutine _reloadCoroutine = null;
     private Animator _animator;
     private int _hitLayerMask; // 총알이 맞을 수 있는 레이어
+    private Player _player;
 
     private Coroutine _flashCoroutine = null; // 지금 돌고 있는 불꽃 코루틴
     private GameObject _currentFlash = null; // 지금 켜져 있는 불꽃
@@ -45,6 +46,7 @@ public class PlayerGunFire : MonoBehaviour
     {
         _bulletCount = _maxBulletCount;
         _animator = GetComponentInChildren<Animator>();
+        _player = GetComponentInParent<Player>();
 
         // Player 레이어 제외
         // 3인칭에서는 카메라 → 조준점 레이가 플레이어 몸을 지나가므로, 빼지 않으면 자기 자신을 쏜다.
@@ -54,6 +56,12 @@ public class PlayerGunFire : MonoBehaviour
     private void Update()
     {
         if (GameManager.Instance.State != GameState.Playing) return;
+
+        if (_player.WeaponMode == WeaponMode.Melee)
+        {
+            _animator.SetBool("Fire", false);
+            return;
+        }
 
         // 0. 발사 타이머를 지난 시간만큼 줄인다.
         _fireTimer -= Time.deltaTime;

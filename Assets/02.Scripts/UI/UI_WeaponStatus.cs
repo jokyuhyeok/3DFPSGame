@@ -53,7 +53,14 @@ public class UI_WeaponStatus : MonoBehaviour
             case WeaponMode.Sniper:
                 _modeText.text = "저격 모드";
                 break;
+            case WeaponMode.Melee:
+                _modeText.text = "칼 모드";
+                break;
         }
+
+        bool isMelee = mode == WeaponMode.Melee;
+        _bulletText.gameObject.SetActive(!isMelee);
+        _bombText.gameObject.SetActive(!isMelee);
     }
 
     // 총알 수가 바뀌었다는 알림이 오면 불리는 함수(콜백)
