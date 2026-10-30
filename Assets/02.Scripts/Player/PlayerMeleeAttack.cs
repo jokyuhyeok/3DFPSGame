@@ -7,6 +7,7 @@ public class PlayerMeleeAttack : MonoBehaviour
     private Animator _animator;
     private int _meleeLayerIndex;
     [SerializeField] private Collider _katanaCollider;
+    [SerializeField] private ParticleSystem _slashVfx;
 
     private void Awake()
     {
@@ -16,7 +17,16 @@ public class PlayerMeleeAttack : MonoBehaviour
     }
 
     // 람다식을 활용한 함수
-    public void ActivateCollider() => _katanaCollider.enabled = true;
+    public void ActivateCollider()
+    {
+        _katanaCollider.enabled = true;
+
+        if (_slashVfx != null)
+        {
+            _slashVfx.Play(true);
+        }
+    }
+
     public void DeactivateCollider() => _katanaCollider.enabled = false;
 
     private void Update()
