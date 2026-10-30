@@ -879,7 +879,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1015
+    m_Bits: 3063
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -1991,7 +1991,7 @@ GameObject:
   - component: {fileID: 552403797}
   - component: {fileID: 552403796}
   - component: {fileID: 552403795}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4171,7 +4171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerWeaponVisual
   _gunHolder: {fileID: 749248857}
   _swordHolder: {fileID: 823369032}
-  _bladeCollider: {fileID: 0}
+  _bladeCollider: {fileID: 1577889611}
 --- !u!1 &1118929695
 GameObject:
   m_ObjectHideFlags: 0
@@ -5572,6 +5572,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMeleeAttack
   _katanaCollider: {fileID: 1577889611}
   _slashVfx: {fileID: 1315769014}
+  _meleeHitMode: 1
+  _range: 2
+  _angle: 90
+  _targetMask:
+    serializedVersion: 2
+    m_Bits: 576
 --- !u!1 &1739842659
 GameObject:
   m_ObjectHideFlags: 0
@@ -6284,7 +6290,7 @@ GameObject:
   - component: {fileID: 1993379172}
   - component: {fileID: 1993379171}
   - component: {fileID: 1993379170}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Box2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
