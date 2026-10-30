@@ -6,6 +6,7 @@ public class PlayerMeleeAttack : MonoBehaviour
     private Player _player;
     private Animator _animator;
     private int _meleeLayetIndex;
+    [SerializeField] private Collider _katanaCollider;
 
     private void Awake()
     {
@@ -13,6 +14,10 @@ public class PlayerMeleeAttack : MonoBehaviour
         _animator = GetComponentInChildren<Animator>();
         _meleeLayetIndex = _animator.GetLayerIndex("Melee Layer");
     }
+
+    // 람다식을 활용한 함수
+    public void ActivateCollider() => _katanaCollider.enabled = true;
+    public void DeactivateCollider() => _katanaCollider.enabled = false;
 
     private void Update()
     {
