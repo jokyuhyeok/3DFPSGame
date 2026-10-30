@@ -22,17 +22,21 @@ public class PlayerMeleeAttack : MonoBehaviour
     [SerializeField] private float _angle = 90f;
     [SerializeField] private LayerMask _targetMask;
 
+    private int _wallMask;
+
     private void Awake()
     {
         _player = GetComponentInParent<Player>();
         _animator = GetComponentInChildren<Animator>();
         _meleeLayerIndex = _animator.GetLayerIndex("Melee Layer");
         _katanaCollider.enabled = false;
+        _wallMask = LayerMask.GetMask("Wall");
     }
 
     public void FanAttack()
     {
         if (_meleeHitMode != MeleeHitMode.Fan) return;
+        PlaySlashVfx();
         Vector3 origin = _player.transform.position;
 
         // 원점, 반지름, 찾을 레이어들
@@ -50,7 +54,7 @@ public class PlayerMeleeAttack : MonoBehaviour
             if (angle > _angle / 2f) continue;
 
             // 적과 나 사이에 벽이 있다면 때리지 않는다.
-            if (Physics.Linecast(origin, hitPoint, LayerMask.NameToLayer("Wall"))) continue;
+            if (Physics.Linecast(origin, hitPoint, _wallMask)) continue;
 
             if (col.TryGetComponent<IDamageable>(out IDamageable damageable))
             {
@@ -72,13 +76,16 @@ public class PlayerMeleeAttack : MonoBehaviour
 
         _katanaCollider.enabled = true;
 
-        if (_slashVfx != null)
-        {
-            _slashVfx.Play(true);
-        }
+        PlaySlashVfx();
     }
 
     public void DeactivateCollider() => _katanaCollider.enabled = false;
+
+    private void PlaySlashVfx()
+    {
+        if (_slashVfx == null) return;
+        _slashVfx.Play(true);
+    }
 
     private void Update()
     {
