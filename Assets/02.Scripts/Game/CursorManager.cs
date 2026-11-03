@@ -12,6 +12,7 @@ public class CursorManager : MonoBehaviour
 
     private bool _isCursorAimMode = false; // [추가]
     private bool _isUIMode = false; // [추가] LeftAlt 누르는 중
+    private bool _isPaused = false;
 
     public bool IsUIMode => _isUIMode; // [추가] 기존 PlayerGunFire의 Cursor.visible 검사를 대체
 
@@ -37,6 +38,21 @@ public class CursorManager : MonoBehaviour
         }
     }
 
+    // GameManager가 일시정지할 때 호출                                      
+    public void UnlockCursor()
+    {
+        _isPaused = true;
+        ApplyCursorState();
+    }
+
+    // GameManager가 일시정지를 풀 때 호출                                   
+    public void LockCursor()
+    {
+        _isPaused = false;
+        _isUIMode = false; // 일시정지 중에는 Alt를 뗀 입력을 받지 못하므로 초기화
+        ApplyCursorState();
+    }
+
     // [추가] CameraViewSwitcher가 시점을 바꿀 때 호출
     public void SetCursorAimMode(bool isCursorAim)
     {
@@ -47,7 +63,7 @@ public class CursorManager : MonoBehaviour
     // [변경] LockCursor/UnlockCursor → 현재 상태에 맞게 한 곳에서 결정
     private void ApplyCursorState()
     {
-        if (_isUIMode)
+        if (_isPaused || _isUIMode)
         {
             Cursor.lockState = CursorLockMode.None; // 자유
             Cursor.visible = true;
