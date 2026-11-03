@@ -12816,7 +12816,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3774b6ea676bcd4f92d458c82b4d2bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PerformanceBenchmark
-  _label: 01_lighting
+  _label: 02_postfx
   _autoRun: 1
   _runKey: 290
   _randomSeed: 12345
@@ -14305,7 +14305,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &832575518
 MonoBehaviour:
   m_ObjectHideFlags: 0
