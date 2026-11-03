@@ -12817,7 +12817,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PerformanceBenchmark
   _label: 03_optimized
-  _autoRun: 1
+  _autoRun: 0
   _runKey: 290
   _randomSeed: 12345
   _warmupSeconds: 1.5
