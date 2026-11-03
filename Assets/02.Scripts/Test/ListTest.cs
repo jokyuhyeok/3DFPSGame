@@ -1,7 +1,5 @@
-using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 using System.Collections.Generic;
-using NUnit.Framework;
 
 public class ListTest : MonoBehaviour
 {
