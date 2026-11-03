@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum GameState
 {
@@ -20,6 +21,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI _stateText;
     [SerializeField] private GameObject _optionPopup;
+    [SerializeField] private GameObject _gameoverPopup;
     [SerializeField] private Animator _playerAnimator;
 
     private void Awake()
@@ -36,6 +38,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         _optionPopup.SetActive(false);
+        _gameoverPopup.SetActive(false);
         StartCoroutine(StartSequence_Coroutine());
     }
 
@@ -52,10 +55,7 @@ public class GameManager : MonoBehaviour
             }
             else if (_state == GameState.Pause)
             {
-                _state = GameState.Playing;
-                Time.timeScale = 1;
-                _optionPopup.SetActive(false);
-                CursorManager.Instance.LockCursor();
+                Resume();
             }
         }
     }
@@ -75,10 +75,35 @@ public class GameManager : MonoBehaviour
     {
         _state = GameState.GameOver;
 
-        _stateText.gameObject.SetActive(true);
-        _stateText.text = "게임 오버";
-        _stateText.color = Color.red;
+        _gameoverPopup.SetActive(true);
+        CursorManager.Instance.UnlockCursor();
 
         _playerAnimator.SetFloat("MoveMotion", 0f);
+    }
+
+    // 계속하기
+    public void Resume()
+    {
+        _state = GameState.Playing;
+        Time.timeScale = 1;
+        _optionPopup.SetActive(false);
+        CursorManager.Instance.LockCursor();
+    }
+
+    // 다시 시작하기
+    public void Restart()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    // 게임 종료하기
+    public void Exit()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }

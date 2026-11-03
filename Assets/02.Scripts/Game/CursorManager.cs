@@ -1,20 +1,20 @@
 using UnityEngine;
 
 // 마우스 커서 상태 관리
-// [변경] 시점에 따라 커서 모드가 달라진다.
+// 시점에 따라 커서 모드가 달라진다.
 // - 중앙 조준 시점: 화면 가운데에 잠그고 숨김 (기존과 동일)
 // - 커서 조준 시점: 화면 안에 가두고 보이게 (조준에 사용)
 // - LeftAlt 누르는 동안(UI 모드): 자유롭게 보이게 (기존과 동일) → 이때는 사격/회전하지 않는다.
 public class CursorManager : MonoBehaviour
 {
-    private static CursorManager _instance = null; // [추가] 다른 스크립트에서 IsUIMode, SetCursorAimMode 사용
+    private static CursorManager _instance = null; // 다른 스크립트에서 IsUIMode, SetCursorAimMode 사용
     public static CursorManager Instance => _instance;
 
-    private bool _isCursorAimMode = false; // [추가]
-    private bool _isUIMode = false; // [추가] LeftAlt 누르는 중
+    private bool _isCursorAimMode = false;
+    private bool _isUIMode = false; // LeftAlt 누르는 중
     private bool _isPaused = false;
 
-    public bool IsUIMode => _isUIMode; // [추가] 기존 PlayerGunFire의 Cursor.visible 검사를 대체
+    public bool IsUIMode => _isUIMode; // 기존 PlayerGunFire의 Cursor.visible 검사를 대체
 
     private void Awake()
     {
@@ -53,14 +53,14 @@ public class CursorManager : MonoBehaviour
         ApplyCursorState();
     }
 
-    // [추가] CameraViewSwitcher가 시점을 바꿀 때 호출
+    // CameraViewSwitcher가 시점을 바꿀 때 호출
     public void SetCursorAimMode(bool isCursorAim)
     {
         _isCursorAimMode = isCursorAim;
         ApplyCursorState();
     }
 
-    // [변경] LockCursor/UnlockCursor → 현재 상태에 맞게 한 곳에서 결정
+    // LockCursor/UnlockCursor → 현재 상태에 맞게 한 곳에서 결정
     private void ApplyCursorState()
     {
         if (_isPaused || _isUIMode)
