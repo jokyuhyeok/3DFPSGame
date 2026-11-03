@@ -121,7 +121,9 @@ public class PerformanceBenchmark : MonoBehaviour
             switcher.enabled = false; // 측정 중에는 카메라를 고정 시점에 둔다
         }
 
-        string folder = Path.Combine(Application.dataPath, "..", "Docs", "Report", _label);
+        // 에디터: <프로젝트>/Docs/Report/<라벨>, 빌드: <빌드 폴더>/Docs/Report/<라벨>_build
+        string label = Application.isEditor ? _label : _label + "_build";
+        string folder = Path.Combine(Application.dataPath, "..", "Docs", "Report", label);
         Directory.CreateDirectory(folder);
 
         _report.Clear();
@@ -224,12 +226,14 @@ public class PerformanceBenchmark : MonoBehaviour
 
         _isRunning = false;
 
-#if UNITY_EDITOR
         if (_quitWhenDone)
         {
+#if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
-        }
+#else
+            Application.Quit(); // 빌드에서도 측정이 끝나면 종료
 #endif
+        }
     }
 
     private void UpdateHud(string viewpointName, float elapsed)
