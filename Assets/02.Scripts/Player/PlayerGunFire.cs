@@ -84,7 +84,7 @@ public class PlayerGunFire : MonoBehaviour
             if (_reloadCoroutine != null)
             {
                 StopCoroutine(_reloadCoroutine);
-                Debug.Log("재장전 취소!");
+                GameLogger.Log("재장전 취소!");
                 _reloadCoroutine = null;
             }
         }
@@ -98,12 +98,12 @@ public class PlayerGunFire : MonoBehaviour
 
     private IEnumerator Reloading_Coroutine()
     {
-        Debug.Log("재장전 시작!");
+        GameLogger.Log("재장전 시작!");
         yield return new WaitForSeconds(_reloadingTime);
         _bulletCount = _maxBulletCount;
         OnBulletChanged?.Invoke(_bulletCount, _maxBulletCount);
 
-        Debug.Log("재장전 완료!");
+        GameLogger.Log("재장전 완료!");
         _reloadCoroutine = null;
     }
 

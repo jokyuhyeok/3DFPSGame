@@ -127,7 +127,7 @@ public class Zombie : MonoBehaviour, IDamageable
 
     public void ChangeState(ZombieState nextState)
     {
-        Debug.Log($"{_currentStateType} -> {nextState}");
+        GameLogger.Log($"{_currentStateType} -> {nextState}");
 
         _currentState?.Exit();
         _currentStateType = nextState;

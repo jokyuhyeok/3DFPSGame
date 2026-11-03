@@ -76,11 +76,11 @@ public class Player : MonoBehaviour, IDamageable
         OnDamaged?.Invoke();
 
         _hitEffect.Play();
-        Debug.Log($"플레이어가 맞았다. 대미지 {damageInfo.Value}, 남은 체력 {_health}");
+        GameLogger.Log($"플레이어가 맞았다. 대미지 {damageInfo.Value}, 남은 체력 {_health}");
 
         if (_health <= 0f)
         {
-            Debug.Log("플레이어가 쓰러졌다."); // 11장에서 게임 오버로 바꾼다.
+            GameLogger.Log("플레이어가 쓰러졌다."); // 11장에서 게임 오버로 바꾼다.
             GameManager.Instance.GameOver();
         }
     }

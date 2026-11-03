@@ -28,6 +28,7 @@ public class PlayerBombFire : MonoBehaviour
     private float _currentThrowPower = 0f;
     private bool _isCharging = false;
     private Player _player;
+    private Transform _cameraTransform;
 
     public int BombCount => _currentbombcount;
     public int MaxBombCount => _maxbombcount;
@@ -38,6 +39,7 @@ public class PlayerBombFire : MonoBehaviour
         _currentbombcount = _maxbombcount;
         _currentThrowPower = _minThrowPower;
         _player = GetComponent<Player>();
+        _cameraTransform = Camera.main.transform; // 던질 때마다 Camera.main을 찾지 않도록 캐싱
     }
 
     private void Update()
@@ -94,7 +96,7 @@ public class PlayerBombFire : MonoBehaviour
 
         _currentbombcount--;
         OnBombChanged?.Invoke(_currentbombcount);
-        Debug.Log($"폭탄 투척.. 남은 개수: {_currentbombcount}/{_maxbombcount}");
+        GameLogger.Log($"폭탄 투척.. 남은 개수: {_currentbombcount}/{_maxbombcount}");
 
         if (_currentbombcount <= 0)
         {
@@ -105,7 +107,7 @@ public class PlayerBombFire : MonoBehaviour
         // [변경] 던지는 방향
         // - 중앙 조준: 시선 방향 (기존과 동일)
         // - 커서 조준: 커서 쪽 + 위로 살짝 → 포물선 (기존처럼 카메라 정면이면 탑다운에서 발밑에 떨어짐)
-        Vector3 throwDirection = Camera.main.transform.forward;
+        Vector3 throwDirection = _cameraTransform.forward;
 
         if (_cameraView != null && _cameraView.IsCursorAim)
         {
