@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -26,6 +27,16 @@ public class UI_Login : MonoBehaviour
     [Header("기타")]
     [SerializeField] private TextMeshProUGUI _messageText;        // 안내 글자
     [SerializeField] private string _gameSceneName = "GameScene";  // 로그인하면 불러올 씬
+
+    // ID 규칙: 이메일 (아이디@도메인.주소)
+    // @ 앞: 영문, 숫자, . _ + - 를 1글자 이상
+    // @ 뒤: 점으로 나뉜 두 덩어리 이상 (점이 @ 바로 뒤·맨 끝에 오거나 연달아 올 수 없다.)
+    private static readonly Regex EmailRegex = new Regex(@"^[A-Za-z0-9._+-]+@[A-Za-z0-9_+-]+(\.[A-Za-z0-9_+-]+)+$");
+
+    // 비밀번호 규칙: 대문자, 소문자, 숫자, 기호를 모두 포함한 8~30글자
+    // (?=.*X)는 "어딘가에 X가 하나 이상 있다"는 조건이다. 기호는 영문·숫자가 아닌 문자다.
+    // [!-~]는 공백을 뺀 키보드 문자(ASCII 33~126)라서 공백이나 한글은 쓸 수 없다.
+    private static readonly Regex PasswordRegex = new Regex(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9])[!-~]{8,30}$");
 
     private Mode _mode = Mode.Login;
 
@@ -92,9 +103,33 @@ public class UI_Login : MonoBehaviour
         string password = _passwordInput.text;
         string passwordConfirm = _passwordConfirmInput.text;
 
+        // 정규표현식 (정규식)
+        // 문자열에서 특정한 규칙이나 패턴을 찾기 위해 사용하느 문법
+        // - 데이터 검증(이메일 형식, 주민번호 형식, 비밀번호 형식)
+        // - 문자열 검색 (Todo라는게 있나?, 한국어가 있나?)
+        // - 문자열 치환 (규칙에 맞는 문자열을 찾아서 다른 문자열로 변경)
+        // - 웹 크롤링 & 파싱
+
+        // Todo: ID, (닉네임)과 비밀번호 규칙
+        // ID는 이메일
+        // 비밀번호는 영어만 가능, 특수문자 대문자 하나 이상을 포함한 7 ~ 15글자
+        // 규칙이 여기서만 쓰일까? (비밀번호 변경 페이지, 닉네임 변경권 아이템 사용시 등등)
+
         if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(password))
         {
             _messageText.text = "아이디와 비밀번호를 입력해 주세요.";
+            return;
+        }
+
+        if (!EmailRegex.IsMatch(id))
+        {
+            _messageText.text = "아이디는 이메일 형식이어야 합니다.";
+            return;
+        }
+
+        if (!PasswordRegex.IsMatch(password))
+        {
+            _messageText.text = "비밀번호는 대문자, 소문자, 숫자, 기호를 모두 포함한 8~30글자여야 합니다.";
             return;
         }
 
