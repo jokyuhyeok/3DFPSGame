@@ -8,10 +8,10 @@ public class AccountPasswordSpecification
     private static readonly Regex PasswordRegex =
         new Regex(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9])[!-~]{8,30}$");
 
-    public string ErrorMessage => "비밀번호는 소문자, 숫자, 기호를 모두 포함한 10~30 글자여야 합니다.";
+    public string ErrorMessage => "비밀번호는 소문자, 숫자, 기호를 모두 포함한 8~30 글자여야 합니다.";
 
-    public bool IsSatisfiedBy(string email)
+    public bool IsSatisfiedBy(string password)
     {
-        return PasswordRegex.IsMatch(email);
+        return PasswordRegex.IsMatch(password);
     }
 }
